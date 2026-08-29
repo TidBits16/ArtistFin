@@ -133,47 +133,41 @@ public class ArtistEngine
 
         var changed = false;
 
-        if (cfg.FillOverview
-            && !string.IsNullOrWhiteSpace(profile.Overview)
+        if (!string.IsNullOrWhiteSpace(profile.Overview)
             && (force || string.IsNullOrWhiteSpace(artist.Overview)))
         {
             artist.Overview = profile.Overview;
             changed = true;
         }
 
-        if (cfg.FillHometown
-            && !string.IsNullOrWhiteSpace(profile.Hometown)
+        if (!string.IsNullOrWhiteSpace(profile.Hometown)
             && (force || artist.ProductionLocations is not { Length: > 0 }))
         {
             artist.ProductionLocations = [profile.Hometown!];
             changed = true;
         }
 
-        if (cfg.FillHomepage
-            && !string.IsNullOrWhiteSpace(profile.Homepage)
+        if (!string.IsNullOrWhiteSpace(profile.Homepage)
             && (force || string.IsNullOrWhiteSpace(artist.HomePageUrl)))
         {
             artist.HomePageUrl = profile.Homepage;
             changed = true;
         }
 
-        if (cfg.FillDates)
+        if (profile.Formed is not null && (force || artist.PremiereDate is null))
         {
-            if (profile.Formed is not null && (force || artist.PremiereDate is null))
-            {
-                artist.PremiereDate = profile.Formed;
-                artist.ProductionYear = profile.Formed.Value.Year;
-                changed = true;
-            }
-
-            if (profile.Disbanded is not null && (force || artist.EndDate is null))
-            {
-                artist.EndDate = profile.Disbanded;
-                changed = true;
-            }
+            artist.PremiereDate = profile.Formed;
+            artist.ProductionYear = profile.Formed.Value.Year;
+            changed = true;
         }
 
-        if (cfg.FillGenres && profile.Genres.Count > 0)
+        if (profile.Disbanded is not null && (force || artist.EndDate is null))
+        {
+            artist.EndDate = profile.Disbanded;
+            changed = true;
+        }
+
+        if (profile.Genres.Count > 0)
         {
             var existing = artist.Genres ?? [];
             var merged = existing
@@ -212,27 +206,24 @@ public class ArtistEngine
         }
 
         var imagesSaved = 0;
-        if (cfg.FillImages)
-        {
-            imagesSaved += await TrySaveImageAsync(
-                artist,
-                profile.PrimaryImageUrl,
-                ImageType.Primary,
-                force,
-                cancellationToken).ConfigureAwait(false) ? 1 : 0;
-            imagesSaved += await TrySaveImageAsync(
-                artist,
-                profile.BackdropImageUrl,
-                ImageType.Backdrop,
-                force,
-                cancellationToken).ConfigureAwait(false) ? 1 : 0;
-            imagesSaved += await TrySaveImageAsync(
-                artist,
-                profile.LogoImageUrl,
-                ImageType.Logo,
-                force,
-                cancellationToken).ConfigureAwait(false) ? 1 : 0;
-        }
+        imagesSaved += await TrySaveImageAsync(
+            artist,
+            profile.PrimaryImageUrl,
+            ImageType.Primary,
+            force,
+            cancellationToken).ConfigureAwait(false) ? 1 : 0;
+        imagesSaved += await TrySaveImageAsync(
+            artist,
+            profile.BackdropImageUrl,
+            ImageType.Backdrop,
+            force,
+            cancellationToken).ConfigureAwait(false) ? 1 : 0;
+        imagesSaved += await TrySaveImageAsync(
+            artist,
+            profile.LogoImageUrl,
+            ImageType.Logo,
+            force,
+            cancellationToken).ConfigureAwait(false) ? 1 : 0;
 
         if (changed || imagesSaved > 0)
         {

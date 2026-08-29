@@ -1,6 +1,6 @@
 name: "ArtistFin: Know Your Artists"
 guid: "0cad762c-9696-4573-8fa8-ad33f3e5d167"
-version: "1.0.2.0"
+version: "1.0.3.0"
 targetAbi: "10.11.0.0"
 framework: "net9.0"
 overview: "Fills artist bios, images, and profile details."

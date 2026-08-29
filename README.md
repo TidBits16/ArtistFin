@@ -5,20 +5,18 @@
 
 # ArtistFin: Know Your Artists
 
-A Jellyfin plugin that fills <strong>artist bios</strong>, <strong>images</strong>, and profile details - the Fin counterpart to MusicFin’s album/track tagging.
+A Jellyfin plugin that fills <strong>artist bios</strong>, <strong>images</strong>, and <strong>profile details</strong> (<em>the Fin counterpart to MusicFin’s album/track tagging</em>).
 
-<strong>Jellyfin 10.11+</strong> · scheduled task + settings button + native Identify/Refresh provider.
+## Providers
 
-## How it works
-
-<strong>Scheduled task</strong> (`ArtistFin: Know Your Artists`) - fills artists that are missing a bio and/or primary image (weekly by default).
-<strong>Settings --> Refresh all artists</strong> - queues a force overwrite (runs under Scheduled Tasks).
-Lookups combine:
-   <strong>MusicBrainz</strong> - IDs, hometown, formed/disbanded, genres, official site
-   <strong>TheAudioDB</strong> - images, genre, country, formed year (bios when the free API returns them)
-   <strong>Deezer</strong> - high-res primary artist images
-   <strong>Wikipedia</strong> - biography extract (the reliable free bio source)
-Also registers as a Jellyfin metadata + image provider so <strong>Identify</strong> / <strong>Refresh</strong> on an artist can use ArtistFin.
+<table align="center">
+  <tr><td align="left"><strong>MusicBrainz</strong></td><td align="left">IDs, hometown, formed/disbanded, genres, official site</td></tr>
+  <tr><td align="left"><strong>TheAudioDB</strong></td><td align="left">images, genre, country, formed year (bios when available from the free API)</td></tr>
+  <tr><td align="left"><strong>Deezer</strong></td><td align="left">high-res primary artist images</td></tr>
+  <tr><td align="left"><strong>Wikipedia</strong></td><td align="left">biography extract (the reliable free bio source)</td></tr>
+</table>
+<br>
+Also registers as a Jellyfin metadata + image provider, so <strong>Identify</strong> / <strong>Refresh</strong> on an artist can use ArtistFin.
 
 Skips junk names like <em>Various Artists</em>.
 

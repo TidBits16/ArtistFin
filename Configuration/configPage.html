@@ -16,48 +16,8 @@
 
                     <div class="verticalSection">
                         <h3 class="checkboxListLabel">Data providers</h3>
-                        <div class="fieldDescription">Checked providers run in list order and merge with first-wins per field. MusicBrainz is best for IDs / hometown / genres; TheAudioDB for images; Wikipedia for bios; Deezer for high-res primary art.</div>
+                        <div class="fieldDescription">Checked providers run in list order and merge with first-wins per field. Whatever they return (bio, images, genres, hometown, dates, website) is written automatically. MusicBrainz is best for IDs / hometown / genres; TheAudioDB for images; Wikipedia for bios; Deezer for high-res primary art.</div>
                         <div id="ProviderList" class="checkboxList paperList checkboxList-paperList"></div>
-                    </div>
-
-                    <div class="verticalSection">
-                        <h3 class="checkboxListLabel">What to fill</h3>
-                        <div class="checkboxContainer checkboxContainer-withDescription">
-                            <label class="emby-checkbox-label">
-                                <input is="emby-checkbox" type="checkbox" id="FillOverview" />
-                                <span>Biography / about</span>
-                            </label>
-                        </div>
-                        <div class="checkboxContainer checkboxContainer-withDescription">
-                            <label class="emby-checkbox-label">
-                                <input is="emby-checkbox" type="checkbox" id="FillImages" />
-                                <span>Images (primary, backdrop, logo)</span>
-                            </label>
-                        </div>
-                        <div class="checkboxContainer checkboxContainer-withDescription">
-                            <label class="emby-checkbox-label">
-                                <input is="emby-checkbox" type="checkbox" id="FillGenres" />
-                                <span>Genres</span>
-                            </label>
-                        </div>
-                        <div class="checkboxContainer checkboxContainer-withDescription">
-                            <label class="emby-checkbox-label">
-                                <input is="emby-checkbox" type="checkbox" id="FillHometown" />
-                                <span>Hometown / country</span>
-                            </label>
-                        </div>
-                        <div class="checkboxContainer checkboxContainer-withDescription">
-                            <label class="emby-checkbox-label">
-                                <input is="emby-checkbox" type="checkbox" id="FillDates" />
-                                <span>Formed / disbanded dates</span>
-                            </label>
-                        </div>
-                        <div class="checkboxContainer checkboxContainer-withDescription">
-                            <label class="emby-checkbox-label">
-                                <input is="emby-checkbox" type="checkbox" id="FillHomepage" />
-                                <span>Official website</span>
-                            </label>
-                        </div>
                     </div>
 
                     <div class="verticalSection">
@@ -223,12 +183,6 @@
                 renderProviderList(order, enabled);
                 document.querySelector('#Workers').value =
                     typeof config.Workers === 'number' ? config.Workers : 1;
-                document.querySelector('#FillOverview').checked = config.FillOverview !== false;
-                document.querySelector('#FillImages').checked = config.FillImages !== false;
-                document.querySelector('#FillGenres').checked = config.FillGenres !== false;
-                document.querySelector('#FillHometown').checked = config.FillHometown !== false;
-                document.querySelector('#FillDates').checked = config.FillDates !== false;
-                document.querySelector('#FillHomepage').checked = config.FillHomepage !== false;
             }
 
             function saveConfig() {
@@ -237,12 +191,6 @@
                     config.DataProviderOrder = readProviderOrder();
                     config.DataProviders = enabled.length ? enabled : defaultEnabledProviders();
                     config.Workers = parseInt(document.querySelector('#Workers').value, 10) || 0;
-                    config.FillOverview = !!document.querySelector('#FillOverview').checked;
-                    config.FillImages = !!document.querySelector('#FillImages').checked;
-                    config.FillGenres = !!document.querySelector('#FillGenres').checked;
-                    config.FillHometown = !!document.querySelector('#FillHometown').checked;
-                    config.FillDates = !!document.querySelector('#FillDates').checked;
-                    config.FillHomepage = !!document.querySelector('#FillHomepage').checked;
                     return ApiClient.updatePluginConfiguration(AfConfig.pluginUniqueId, config);
                 });
             }

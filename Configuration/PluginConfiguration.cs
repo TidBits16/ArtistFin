@@ -69,16 +69,4 @@ public class PluginConfiguration : BasePluginConfiguration
 
         return list;
     }
-
-    public bool FillOverview { get; set; } = true;
-
-    public bool FillImages { get; set; } = true;
-
-    public bool FillGenres { get; set; } = true;
-
-    public bool FillHometown { get; set; } = true;
-
-    public bool FillDates { get; set; } = true;
-
-    public bool FillHomepage { get; set; } = true;
 }

@@ -6,8 +6,8 @@
   "owner": "TidBits16",
   "category": "Metadata",
   "imageUrl": "https://raw.githubusercontent.com/TidBits16/ArtistFin/main/backdrop.svg",
-  "version": "1.0.2.0",
+  "version": "1.0.3.0",
   "targetAbi": "10.11.0.0",
-  "changelog": "Selectable, reorderable data providers (MusicBrainz, TheAudioDB, Deezer, Wikipedia).",
+  "changelog": "Drop per-field fill toggles; providers control what gets written.",
   "imagePath": "backdrop.svg"
 }
