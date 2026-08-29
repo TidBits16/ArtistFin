@@ -10,45 +10,45 @@
   <img src="backdrop.svg" alt="ArtistFin backdrop" width="100%">
 </p>
 
-A Jellyfin plugin that fills **artist bios**, **images**, and profile details — the Fin counterpart to MusicFin’s album/track tagging.
+A Jellyfin plugin that fills <strong>artist bios</strong>, <strong>images</strong>, and profile details — the Fin counterpart to MusicFin’s album/track tagging.
 
-**Jellyfin 10.11+** · scheduled task + settings button + native Identify/Refresh provider.
+<strong>Jellyfin 10.11+</strong> · scheduled task + settings button + native Identify/Refresh provider.
 
 ## How it works
 
-**Scheduled task** (`ArtistFin: Know Your Artists`) — fills artists that are missing a bio and/or primary image (weekly by default).
-**Settings → Refresh all artists** — queues a force overwrite (runs under Scheduled Tasks).
+<strong>Scheduled task</strong> (`ArtistFin: Know Your Artists`) — fills artists that are missing a bio and/or primary image (weekly by default).
+<strong>Settings → Refresh all artists</strong> — queues a force overwrite (runs under Scheduled Tasks).
 Lookups combine:
-   **MusicBrainz** — IDs, hometown, formed/disbanded, genres, official site
-   **TheAudioDB** — images, genre, country, formed year (bios when the free API returns them)
-   **Deezer** — high-res primary artist images
-   **Wikipedia** — biography extract (the reliable free bio source)
-Also registers as a Jellyfin metadata + image provider so **Identify** / **Refresh** on an artist can use ArtistFin.
+   <strong>MusicBrainz</strong> — IDs, hometown, formed/disbanded, genres, official site
+   <strong>TheAudioDB</strong> — images, genre, country, formed year (bios when the free API returns them)
+   <strong>Deezer</strong> — high-res primary artist images
+   <strong>Wikipedia</strong> — biography extract (the reliable free bio source)
+Also registers as a Jellyfin metadata + image provider so <strong>Identify</strong> / <strong>Refresh</strong> on an artist can use ArtistFin.
 
-Skips junk names like *Various Artists*.
+Skips junk names like <em>Various Artists</em>.
 
 ## Installing
-**Step 1**
+<strong>Step 1</strong>
 <p align="center">
   <img src="repo_graphics/plugins.jpg" alt="Plugins Location" width="100%">
 </p>
 
-**Dashboard --> Plugins --> Manage Repositories** --> **+ New Repository**:
+<strong>Dashboard --> Plugins --> Manage Repositories</strong> --> <strong>+ New Repository</strong>:
    Name: `FinPlugins` (or whatever :P )
    URL: `https://raw.githubusercontent.com/TidBits16/FinPlugins/main/manifest.json`
    <br>
-   (p.s. this bundle includes my other FinPlugins since they are designed to work together. ***they are not required to install!***)
+   (p.s. this bundle includes my other FinPlugins since they are designed to work together. <strong><em>they are not required to install!</em></strong>)
 <br>
-<center><strong>**Then Restart JellyFin!**</strong></center>
+<center><strong>Then Restart JellyFin!</strong></center>
 
-**Step 2**
+<strong>Step 2</strong>
 <p align="center">
   <img src="repo_graphics/where_to_find.jpg" alt="Where To Find Repo" width="100%">
 </p>
 
-**Plugins** --> **All** --> **ArtistFin: Know Your Artists** --> **Install**
+<strong>Plugins</strong> --> <strong>All</strong> --> <strong>ArtistFin: Know Your Artists</strong> --> <strong>Install</strong>
 
-<center><strong>**Once Installed, Restart JellyFin Again!**</strong></center>
+<center><strong>Once Installed, Restart JellyFin Again!</strong></center>
 
 ## Build Locally
 
@@ -61,7 +61,7 @@ dotnet build Jellyfin.Plugin.ArtistFin.csproj -c Release
 
 The release zip will be in `dist/`.
 
-Designed for **Jellyfin 10.11+** (you probably have this already :D)
+Designed for <strong>Jellyfin 10.11+</strong> (you probably have this already :D)
 <p align="center">
   <a href="https://github.com/TidBits16/FinPlugins">
     <img src="repo_graphics/fin-family.svg" alt="Fin plugins" width="360">
