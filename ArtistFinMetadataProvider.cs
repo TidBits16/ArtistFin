@@ -32,7 +32,8 @@ public sealed class ArtistFinMetadataProvider : IRemoteMetadataProvider<MusicArt
             return result;
         }
 
-        var profile = await _lookup.LookupAsync(name, cancellationToken).ConfigureAwait(false);
+        var providers = Plugin.Instance?.Configuration.EffectiveDataProviders;
+        var profile = await _lookup.LookupAsync(name, providers, cancellationToken).ConfigureAwait(false);
         if (profile is null)
         {
             return result;
@@ -95,7 +96,8 @@ public sealed class ArtistFinMetadataProvider : IRemoteMetadataProvider<MusicArt
             return [];
         }
 
-        var profile = await _lookup.LookupAsync(name, cancellationToken).ConfigureAwait(false);
+        var providers = Plugin.Instance?.Configuration.EffectiveDataProviders;
+        var profile = await _lookup.LookupAsync(name, providers, cancellationToken).ConfigureAwait(false);
         if (profile is null)
         {
             return [];

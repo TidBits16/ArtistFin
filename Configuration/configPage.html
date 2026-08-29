@@ -5,14 +5,20 @@
     <title>ArtistFin: Know Your Artists</title>
 </head>
 <body>
-    <div id="AfConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-checkbox">
+    <div id="AfConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-checkbox,paper-icon-button-light">
         <div data-role="content">
             <div class="content-primary">
                 <form id="AfConfigForm">
                     <div class="sectionTitleContainer flex align-items-center">
                         <h2 class="sectionTitle">ArtistFin: Know Your Artists</h2>
                     </div>
-                    <p>Fills artist <strong>bios</strong>, <strong>images</strong>, and profile details from Wikipedia, Deezer, TheAudioDB, and MusicBrainz. The scheduled task only fills what is missing. Use the button below to queue a full refresh.</p>
+                    <p>Fills artist <strong>bios</strong>, <strong>images</strong>, and profile details. The scheduled task only fills what is missing. Use the button below to queue a full refresh.</p>
+
+                    <div class="verticalSection">
+                        <h3 class="checkboxListLabel">Data providers</h3>
+                        <div class="fieldDescription">Checked providers run in list order and merge with first-wins per field. MusicBrainz is best for IDs / hometown / genres; TheAudioDB for images; Wikipedia for bios; Deezer for high-res primary art.</div>
+                        <div id="ProviderList" class="checkboxList paperList checkboxList-paperList"></div>
+                    </div>
 
                     <div class="verticalSection">
                         <h3 class="checkboxListLabel">What to fill</h3>
@@ -82,7 +88,139 @@
         <script>
             const AfConfig = { pluginUniqueId: '0cad762c-9696-4573-8fa8-ad33f3e5d167' };
 
+            const PROVIDER_CATALOG = [
+                { id: 'MusicBrainz', name: 'MusicBrainz (IDs, hometown, genres, dates)' },
+                { id: 'TheAudioDB', name: 'TheAudioDB (images, bio when available)' },
+                { id: 'Deezer', name: 'Deezer (high-res primary image)' },
+                { id: 'Wikipedia', name: 'Wikipedia (biography)' }
+            ];
+            const DEFAULT_PROVIDER_ORDER = PROVIDER_CATALOG.map(function (p) { return p.id; });
+
+            function providerName(id) {
+                var match = PROVIDER_CATALOG.find(function (p) { return p.id === id; });
+                return match ? match.name : id;
+            }
+
+            function normalizeProviderOrder(order) {
+                var list = [];
+                var seen = {};
+                (order || []).forEach(function (id) {
+                    if (!seen[id] && DEFAULT_PROVIDER_ORDER.indexOf(id) >= 0) {
+                        seen[id] = true;
+                        list.push(id);
+                    }
+                });
+                DEFAULT_PROVIDER_ORDER.forEach(function (id) {
+                    if (!seen[id]) {
+                        list.push(id);
+                    }
+                });
+                return list;
+            }
+
+            function defaultEnabledProviders() {
+                return DEFAULT_PROVIDER_ORDER.slice();
+            }
+
+            function adjustSortableListElement(elem) {
+                var btn = elem.querySelector('.btnSortable');
+                if (!btn) {
+                    return;
+                }
+                var siblings = elem.parentNode ? elem.parentNode.querySelectorAll('.sortableOption').length : 1;
+                if (siblings <= 1) {
+                    btn.style.display = 'none';
+                    return;
+                }
+                btn.style.display = '';
+                var icon = btn.querySelector('.material-icons');
+                if (elem.previousElementSibling) {
+                    btn.title = 'Up';
+                    btn.classList.add('btnSortableMoveUp');
+                    btn.classList.remove('btnSortableMoveDown');
+                    if (icon) {
+                        icon.classList.remove('keyboard_arrow_down');
+                        icon.classList.add('keyboard_arrow_up');
+                    }
+                } else {
+                    btn.title = 'Down';
+                    btn.classList.remove('btnSortableMoveUp');
+                    btn.classList.add('btnSortableMoveDown');
+                    if (icon) {
+                        icon.classList.remove('keyboard_arrow_up');
+                        icon.classList.add('keyboard_arrow_down');
+                    }
+                }
+            }
+
+            function renderProviderList(order, enabled) {
+                var list = document.querySelector('#ProviderList');
+                var html = '';
+                order.forEach(function (id, index) {
+                    var checked = enabled.indexOf(id) >= 0 ? ' checked="checked"' : '';
+                    html += '<div class="listItem providerItem sortableOption" data-provider="' + id + '">';
+                    html += '<label class="listItemCheckboxContainer">';
+                    html += '<input type="checkbox" is="emby-checkbox" class="providerCheckbox"' + checked + '><span></span>';
+                    html += '</label>';
+                    html += '<div class="listItemBody"><h3 class="listItemBodyText">' + providerName(id) + '</h3></div>';
+                    if (index > 0) {
+                        html += '<button type="button" is="paper-icon-button-light" title="Up" class="btnSortableMoveUp btnSortable">';
+                        html += '<span class="material-icons keyboard_arrow_up" aria-hidden="true"></span></button>';
+                    } else if (order.length > 1) {
+                        html += '<button type="button" is="paper-icon-button-light" title="Down" class="btnSortableMoveDown btnSortable">';
+                        html += '<span class="material-icons keyboard_arrow_down" aria-hidden="true"></span></button>';
+                    }
+                    html += '</div>';
+                });
+                list.innerHTML = html;
+                Array.from(list.querySelectorAll('.sortableOption')).forEach(adjustSortableListElement);
+            }
+
+            function readProviderOrder() {
+                return Array.from(document.querySelectorAll('#ProviderList .providerItem'))
+                    .map(function (el) { return el.getAttribute('data-provider'); });
+            }
+
+            function readEnabledProviders() {
+                return Array.from(document.querySelectorAll('#ProviderList .providerItem'))
+                    .filter(function (el) { return el.querySelector('.providerCheckbox').checked; })
+                    .map(function (el) { return el.getAttribute('data-provider'); });
+            }
+
+            function onProviderListClick(e) {
+                var btn = e.target.closest('.btnSortable');
+                if (!btn) {
+                    return;
+                }
+                var item = btn.closest('.sortableOption');
+                var list = item.parentNode;
+                if (btn.classList.contains('btnSortableMoveDown')) {
+                    var next = item.nextElementSibling;
+                    if (next) {
+                        list.removeChild(item);
+                        list.insertBefore(item, next.nextElementSibling);
+                    }
+                } else {
+                    var prev = item.previousElementSibling;
+                    if (prev) {
+                        list.removeChild(item);
+                        list.insertBefore(item, prev);
+                    }
+                }
+                Array.from(list.querySelectorAll('.sortableOption')).forEach(adjustSortableListElement);
+            }
+
             function applyConfig(config) {
+                var order = normalizeProviderOrder(
+                    config.DataProviderOrder && config.DataProviderOrder.length
+                        ? config.DataProviderOrder
+                        : (config.DataProviders && config.DataProviders.length
+                            ? config.DataProviders
+                            : defaultEnabledProviders()));
+                var enabled = config.DataProviders && config.DataProviders.length
+                    ? config.DataProviders
+                    : defaultEnabledProviders();
+                renderProviderList(order, enabled);
                 document.querySelector('#Workers').value =
                     typeof config.Workers === 'number' ? config.Workers : 1;
                 document.querySelector('#FillOverview').checked = config.FillOverview !== false;
@@ -95,6 +233,9 @@
 
             function saveConfig() {
                 return ApiClient.getPluginConfiguration(AfConfig.pluginUniqueId).then(function (config) {
+                    var enabled = readEnabledProviders();
+                    config.DataProviderOrder = readProviderOrder();
+                    config.DataProviders = enabled.length ? enabled : defaultEnabledProviders();
                     config.Workers = parseInt(document.querySelector('#Workers').value, 10) || 0;
                     config.FillOverview = !!document.querySelector('#FillOverview').checked;
                     config.FillImages = !!document.querySelector('#FillImages').checked;
@@ -128,6 +269,8 @@
                     btn.disabled = false;
                 });
             }
+
+            document.querySelector('#ProviderList').addEventListener('click', onProviderListClick);
 
             document.querySelector('#RefreshAllBtn').addEventListener('click', function (e) {
                 e.preventDefault();

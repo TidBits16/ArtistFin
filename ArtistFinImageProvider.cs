@@ -34,7 +34,8 @@ public sealed class ArtistFinImageProvider : IRemoteImageProvider, IHasOrder
             return [];
         }
 
-        var profile = await _lookup.LookupAsync(artist.Name ?? string.Empty, cancellationToken)
+        var providers = Plugin.Instance?.Configuration.EffectiveDataProviders;
+        var profile = await _lookup.LookupAsync(artist.Name ?? string.Empty, providers, cancellationToken)
             .ConfigureAwait(false);
         if (profile is null)
         {

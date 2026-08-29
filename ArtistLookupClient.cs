@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Text.Json;
+using Jellyfin.Plugin.ArtistFin.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.ArtistFin;
@@ -28,7 +29,13 @@ public sealed class ArtistLookupClient
 
     public int CacheHits => _http.CacheHits;
 
-    public async Task<ArtistProfile?> LookupAsync(string artistName, CancellationToken cancellationToken)
+    public Task<ArtistProfile?> LookupAsync(string artistName, CancellationToken cancellationToken)
+        => LookupAsync(artistName, null, cancellationToken);
+
+    public async Task<ArtistProfile?> LookupAsync(
+        string artistName,
+        IReadOnlyList<ArtistDataProvider>? providers,
+        CancellationToken cancellationToken)
     {
         if (ArtistNames.ShouldSkip(artistName))
         {
@@ -36,27 +43,59 @@ public sealed class ArtistLookupClient
         }
 
         var profile = new ArtistProfile { Name = artistName.Trim() };
+        var enabled = providers is { Count: > 0 }
+            ? providers
+            : ArtistDataProviderCatalog.AllInOrder;
 
-        await EnrichFromMusicBrainzAsync(profile, cancellationToken).ConfigureAwait(false);
-        await EnrichFromAudioDbAsync(profile, cancellationToken).ConfigureAwait(false);
-        await EnrichFromDeezerAsync(profile, cancellationToken).ConfigureAwait(false);
-        await EnrichFromWikipediaAsync(profile, cancellationToken).ConfigureAwait(false);
+        var used = new List<string>();
+        foreach (var provider in enabled)
+        {
+            switch (provider)
+            {
+                case ArtistDataProvider.MusicBrainz:
+                    await EnrichFromMusicBrainzAsync(profile, cancellationToken).ConfigureAwait(false);
+                    if (!string.IsNullOrWhiteSpace(profile.MusicBrainzId))
+                    {
+                        used.Add("musicbrainz");
+                    }
+
+                    break;
+                case ArtistDataProvider.TheAudioDB:
+                    await EnrichFromAudioDbAsync(profile, cancellationToken).ConfigureAwait(false);
+                    if (!string.IsNullOrWhiteSpace(profile.AudioDbId))
+                    {
+                        used.Add("audiodb");
+                    }
+
+                    break;
+                case ArtistDataProvider.Deezer:
+                    await EnrichFromDeezerAsync(profile, cancellationToken).ConfigureAwait(false);
+                    if (!string.IsNullOrWhiteSpace(profile.DeezerId))
+                    {
+                        used.Add("deezer");
+                    }
+
+                    break;
+                case ArtistDataProvider.Wikipedia:
+                {
+                    var hadOverview = !string.IsNullOrWhiteSpace(profile.Overview);
+                    await EnrichFromWikipediaAsync(profile, cancellationToken).ConfigureAwait(false);
+                    if (!hadOverview && !string.IsNullOrWhiteSpace(profile.Overview))
+                    {
+                        used.Add("wikipedia");
+                    }
+
+                    break;
+                }
+            }
+        }
 
         if (!profile.HasUsefulData)
         {
             return null;
         }
 
-        profile.Source = string.Join(
-            '+',
-            new[]
-            {
-                string.IsNullOrWhiteSpace(profile.AudioDbId) ? null : "audiodb",
-                string.IsNullOrWhiteSpace(profile.DeezerId) ? null : "deezer",
-                string.IsNullOrWhiteSpace(profile.MusicBrainzId) ? null : "musicbrainz",
-                string.IsNullOrWhiteSpace(profile.Overview) ? null : "wikipedia"
-            }.Where(s => s is not null));
-
+        profile.Source = string.Join('+', used.Distinct());
         return profile;
     }
 

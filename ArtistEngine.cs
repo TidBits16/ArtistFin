@@ -50,10 +50,11 @@ public class ArtistEngine
             : artists.Where(NeedsWork).ToList();
 
         _logger.LogInformation(
-            "ArtistFin: {Targets}/{Total} artists ({Mode}), {Workers} workers",
+            "ArtistFin: {Targets}/{Total} artists ({Mode}), providers {Providers}, {Workers} workers",
             targets.Count,
             artists.Count,
             force ? "force all" : "missing only",
+            string.Join(" --> ", cfg.EffectiveDataProviders),
             workers);
 
         var updated = 0;
@@ -121,8 +122,10 @@ public class ArtistEngine
         PluginConfiguration cfg,
         CancellationToken cancellationToken)
     {
-        var profile = await _lookup.LookupAsync(artist.Name ?? string.Empty, cancellationToken)
-            .ConfigureAwait(false);
+        var profile = await _lookup.LookupAsync(
+                artist.Name ?? string.Empty,
+                cfg.EffectiveDataProviders,
+                cancellationToken).ConfigureAwait(false);
         if (profile is null)
         {
             return false;

@@ -1,14 +1,9 @@
 <div align="center">
-
-<p align="center">
-  <img src="logo.svg" alt="ArtistFin" width="128" height="128">
-</p>
-
-# ArtistFin: Know Your Artists
-
 <p align="center">
   <img src="backdrop.svg" alt="ArtistFin backdrop" width="100%">
 </p>
+
+# ArtistFin: Know Your Artists
 
 A Jellyfin plugin that fills <strong>artist bios</strong>, <strong>images</strong>, and profile details - the Fin counterpart to MusicFin’s album/track tagging.
 
