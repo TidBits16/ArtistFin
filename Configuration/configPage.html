@@ -60,7 +60,7 @@
                             <span>Refresh all artists</span>
                         </button>
                         <div class="fieldDescription" id="RefreshAllStatus" style="margin-top:0.5em">
-                            Queues <strong>ArtistFin: Refresh All Artists</strong> under Dashboard → Scheduled Tasks.
+                            Queues <strong>ArtistFin: Refresh All Artists</strong> under Dashboard --> Scheduled Tasks.
                         </div>
                     </div>
 
@@ -118,7 +118,7 @@
                     contentType: 'application/json',
                     dataType: 'json'
                 }).then(function () {
-                    status.textContent = 'Queued. Watch Dashboard → Scheduled Tasks → ArtistFin: Refresh All Artists.';
+                    status.textContent = 'Queued. Watch Dashboard --> Scheduled Tasks --> ArtistFin: Refresh All Artists.';
                     Dashboard.hideLoadingMsg();
                 }).catch(function (err) {
                     var detail = (err && (err.message || err.statusText)) || 'unknown error';

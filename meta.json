@@ -6,8 +6,8 @@
   "owner": "TidBits16",
   "category": "Metadata",
   "imageUrl": "https://raw.githubusercontent.com/TidBits16/ArtistFin/main/backdrop.svg",
-  "version": "1.0.0.0",
+  "version": "1.0.1.0",
   "targetAbi": "10.11.0.0",
-  "changelog": "Initial release: artist bios (Wikipedia), images (Deezer + TheAudioDB), profile details (MusicBrainz + TheAudioDB).",
+  "changelog": "Normalize arrow punctuation in UI copy and logs.",
   "imagePath": "backdrop.svg"
 }
