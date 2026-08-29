@@ -7,6 +7,10 @@
 
 A Jellyfin plugin that fills <strong>artist bios</strong>, <strong>images</strong>, and <strong>profile details</strong> (<em>the Fin counterpart to MusicFin’s album/track tagging</em>).
 
+<p align="center">
+  <img src="repo_graphics/beta_meme.jpg" alt="ArtistFin backdrop" width="100%">
+</p>
+
 ## Providers
 
 <table align="center">
