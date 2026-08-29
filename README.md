@@ -59,7 +59,7 @@ dotnet build Jellyfin.Plugin.ArtistFin.csproj -c Release
 
 The release zip will be in `dist/`.
 
-Designed for **Jellyfin 10.11+** (you probably have this already :D )
+Designed for **Jellyfin 10.11+** (you probably have this already :D)
 <p align="center">
-  <img src="logo.svg" alt="ArtistFin Logo" width="128" height="128">
+  <img src="repo_graphics/fin-family.svg" alt="Fin plugins" width="360">
 </p>
