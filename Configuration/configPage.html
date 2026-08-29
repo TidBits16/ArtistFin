@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>ArtistFin: Know Your Artists</title>
+</head>
+<body>
+    <div id="AfConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-checkbox">
+        <div data-role="content">
+            <div class="content-primary">
+                <form id="AfConfigForm">
+                    <div class="sectionTitleContainer flex align-items-center">
+                        <h2 class="sectionTitle">ArtistFin: Know Your Artists</h2>
+                    </div>
+                    <p>Fills artist <strong>bios</strong>, <strong>images</strong>, and profile details from Wikipedia, Deezer, TheAudioDB, and MusicBrainz. The scheduled task only fills what is missing. Use the button below to queue a full refresh.</p>
+
+                    <div class="verticalSection">
+                        <h3 class="checkboxListLabel">What to fill</h3>
+                        <div class="checkboxContainer checkboxContainer-withDescription">
+                            <label class="emby-checkbox-label">
+                                <input is="emby-checkbox" type="checkbox" id="FillOverview" />
+                                <span>Biography / about</span>
+                            </label>
+                        </div>
+                        <div class="checkboxContainer checkboxContainer-withDescription">
+                            <label class="emby-checkbox-label">
+                                <input is="emby-checkbox" type="checkbox" id="FillImages" />
+                                <span>Images (primary, backdrop, logo)</span>
+                            </label>
+                        </div>
+                        <div class="checkboxContainer checkboxContainer-withDescription">
+                            <label class="emby-checkbox-label">
+                                <input is="emby-checkbox" type="checkbox" id="FillGenres" />
+                                <span>Genres</span>
+                            </label>
+                        </div>
+                        <div class="checkboxContainer checkboxContainer-withDescription">
+                            <label class="emby-checkbox-label">
+                                <input is="emby-checkbox" type="checkbox" id="FillHometown" />
+                                <span>Hometown / country</span>
+                            </label>
+                        </div>
+                        <div class="checkboxContainer checkboxContainer-withDescription">
+                            <label class="emby-checkbox-label">
+                                <input is="emby-checkbox" type="checkbox" id="FillDates" />
+                                <span>Formed / disbanded dates</span>
+                            </label>
+                        </div>
+                        <div class="checkboxContainer checkboxContainer-withDescription">
+                            <label class="emby-checkbox-label">
+                                <input is="emby-checkbox" type="checkbox" id="FillHomepage" />
+                                <span>Official website</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="verticalSection">
+                        <h3 class="checkboxListLabel">Refresh</h3>
+                        <button is="emby-button" type="button" id="RefreshAllBtn" class="raised block">
+                            <span>Refresh all artists</span>
+                        </button>
+                        <div class="fieldDescription" id="RefreshAllStatus" style="margin-top:0.5em">
+                            Queues <strong>ArtistFin: Refresh All Artists</strong> under Dashboard → Scheduled Tasks.
+                        </div>
+                    </div>
+
+                    <details class="verticalSection">
+                        <summary class="checkboxListLabel" style="cursor:pointer">Advanced</summary>
+                        <div class="inputContainer" style="margin-top:1em">
+                            <label class="inputLabel" for="Workers">Workers</label>
+                            <input is="emby-input" type="number" id="Workers" min="0" max="4" />
+                            <div class="fieldDescription">Concurrent artists. Keep low (MusicBrainz / Wikipedia prefer polite clients). 0 or 1 recommended. Max 4.</div>
+                        </div>
+                    </details>
+
+                    <button is="emby-button" type="submit" class="raised button-submit block">
+                        <span>Save</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <script>
+            const AfConfig = { pluginUniqueId: '0cad762c-9696-4573-8fa8-ad33f3e5d167' };
+
+            function applyConfig(config) {
+                document.querySelector('#Workers').value =
+                    typeof config.Workers === 'number' ? config.Workers : 1;
+                document.querySelector('#FillOverview').checked = config.FillOverview !== false;
+                document.querySelector('#FillImages').checked = config.FillImages !== false;
+                document.querySelector('#FillGenres').checked = config.FillGenres !== false;
+                document.querySelector('#FillHometown').checked = config.FillHometown !== false;
+                document.querySelector('#FillDates').checked = config.FillDates !== false;
+                document.querySelector('#FillHomepage').checked = config.FillHomepage !== false;
+            }
+
+            function saveConfig() {
+                return ApiClient.getPluginConfiguration(AfConfig.pluginUniqueId).then(function (config) {
+                    config.Workers = parseInt(document.querySelector('#Workers').value, 10) || 0;
+                    config.FillOverview = !!document.querySelector('#FillOverview').checked;
+                    config.FillImages = !!document.querySelector('#FillImages').checked;
+                    config.FillGenres = !!document.querySelector('#FillGenres').checked;
+                    config.FillHometown = !!document.querySelector('#FillHometown').checked;
+                    config.FillDates = !!document.querySelector('#FillDates').checked;
+                    config.FillHomepage = !!document.querySelector('#FillHomepage').checked;
+                    return ApiClient.updatePluginConfiguration(AfConfig.pluginUniqueId, config);
+                });
+            }
+
+            function refreshAll() {
+                var status = document.querySelector('#RefreshAllStatus');
+                var btn = document.querySelector('#RefreshAllBtn');
+                btn.disabled = true;
+                status.textContent = 'Queueing refresh…';
+                Dashboard.showLoadingMsg();
+                return ApiClient.ajax({
+                    type: 'POST',
+                    url: ApiClient.getUrl('ArtistFin/RefreshAll'),
+                    contentType: 'application/json',
+                    dataType: 'json'
+                }).then(function () {
+                    status.textContent = 'Queued. Watch Dashboard → Scheduled Tasks → ArtistFin: Refresh All Artists.';
+                    Dashboard.hideLoadingMsg();
+                }).catch(function (err) {
+                    var detail = (err && (err.message || err.statusText)) || 'unknown error';
+                    status.textContent = 'Could not queue refresh (' + detail + '). Check the Jellyfin log.';
+                    Dashboard.hideLoadingMsg();
+                }).then(function () {
+                    btn.disabled = false;
+                });
+            }
+
+            document.querySelector('#RefreshAllBtn').addEventListener('click', function (e) {
+                e.preventDefault();
+                refreshAll();
+            });
+
+            document.querySelector('#AfConfigPage').addEventListener('pageshow', function () {
+                Dashboard.showLoadingMsg();
+                ApiClient.getPluginConfiguration(AfConfig.pluginUniqueId).then(function (config) {
+                    applyConfig(config);
+                    Dashboard.hideLoadingMsg();
+                }).catch(function () {
+                    Dashboard.hideLoadingMsg();
+                });
+            });
+
+            document.querySelector('#AfConfigForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+                Dashboard.showLoadingMsg();
+                saveConfig().then(function (result) {
+                    Dashboard.processPluginConfigurationUpdateResult(result);
+                }).catch(function () {
+                    Dashboard.hideLoadingMsg();
+                });
+                return false;
+            });
+        </script>
+    </div>
+</body>
+</html>
