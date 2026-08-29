@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
   <defs>
     <style>
-      .base { fill: #dc8a78; }
-      .base-shadow { fill: #b06b5d; }
+      .base { fill: #04a5e5; } /* Updated from salmon */
+      .base-shadow { fill: #0384c1; } /* Darker shade of new blue for shadow */
       .symbol { fill: #ffffff; }
-      .badge-bg { fill: #179299; }
+      .badge-bg { fill: #40a02b; } /* Updated from teal */
       .badge-symbol { fill: #ffffff; }
     </style>
   </defs>
