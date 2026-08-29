@@ -16,14 +16,14 @@ A Jellyfin plugin that fills **artist bios**, **images**, and profile details �
 
 ## How it works
 
-1. **Scheduled task** (`ArtistFin: Know Your Artists`) — fills artists that are missing a bio and/or primary image (weekly by default).
-2. **Settings → Refresh all artists** — queues a force overwrite (runs under Scheduled Tasks).
-3. Lookups combine:
-   - **MusicBrainz** — IDs, hometown, formed/disbanded, genres, official site
-   - **TheAudioDB** — images, genre, country, formed year (bios when the free API returns them)
-   - **Deezer** — high-res primary artist images
-   - **Wikipedia** — biography extract (the reliable free bio source)
-4. Also registers as a Jellyfin metadata + image provider so **Identify** / **Refresh** on an artist can use ArtistFin.
+**Scheduled task** (`ArtistFin: Know Your Artists`) — fills artists that are missing a bio and/or primary image (weekly by default).
+**Settings → Refresh all artists** — queues a force overwrite (runs under Scheduled Tasks).
+Lookups combine:
+   **MusicBrainz** — IDs, hometown, formed/disbanded, genres, official site
+   **TheAudioDB** — images, genre, country, formed year (bios when the free API returns them)
+   **Deezer** — high-res primary artist images
+   **Wikipedia** — biography extract (the reliable free bio source)
+Also registers as a Jellyfin metadata + image provider so **Identify** / **Refresh** on an artist can use ArtistFin.
 
 Skips junk names like *Various Artists*.
 
@@ -34,8 +34,8 @@ Skips junk names like *Various Artists*.
 </p>
 
 **Dashboard --> Plugins --> Manage Repositories** --> **+ New Repository**:
-   - Name: `FinPlugins` (or whatever :P )
-   - URL: `https://raw.githubusercontent.com/TidBits16/FinPlugins/main/manifest.json`
+   Name: `FinPlugins` (or whatever :P )
+   URL: `https://raw.githubusercontent.com/TidBits16/FinPlugins/main/manifest.json`
    <br>
    (p.s. this bundle includes my other FinPlugins since they are designed to work together. ***they are not required to install!***)
 <br>
