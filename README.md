@@ -25,19 +25,42 @@ A Jellyfin plugin that fills **artist bios**, **images**, and profile details �
 
 Skips junk names like *Various Artists*.
 
-## Install
+## Installing
+**Step 1**
+<p align="center">
+  <img src="repo_graphics/plugins.jpg" alt="Plugins Location" width="100%">
+</p>
 
-1. **Dashboard → Plugins → Repositories** → add:
-   - Name: `FinPlugins`
+**Dashboard --> Plugins --> Manage Repositories** --> **+ New Repository**:
+   - Name: `FinPlugins` (or whatever :P )
    - URL: `https://raw.githubusercontent.com/TidBits16/FinPlugins/main/manifest.json`
-2. **Catalog** → refresh → install **ArtistFin: Know Your Artists** → restart when asked.
-3. Configure under **Plugins → ArtistFin**, or run from **Scheduled Tasks**.
+   <br>
+   <br>
+   (p.s. this bundle includes my other FinPlugins since they are designed to work together. ***they are not required to install!***)
 
-## Build locally
+<center><strong>**Then Restart JellyFin!**</strong></center>
+
+**Step 2**
+<p align="center">
+  <img src="repo_graphics/where_to_find.jpg" alt="Where To Find Repo" width="100%">
+</p>
+
+**Plugins** --> **All** --> **ArtistFin: Know Your Artists** --> **Install**
+
+<center><strong>**Once Installed, Restart JellyFin Again!**</strong></center>
+
+## Build Locally
+
+For development or packaging your own build:
 
 ```bash
 dotnet build Jellyfin.Plugin.ArtistFin.csproj -c Release
 ./scripts/package.sh
 ```
 
-The release zip lands in `dist/`.
+The release zip will be in `dist/`.
+
+Designed for **Jellyfin 10.11+** (you probably have this already :D )
+<p align="center">
+  <img src="logo.svg" alt="ArtistFin Logo" width="128" height="128">
+</p>
