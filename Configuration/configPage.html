@@ -90,12 +90,13 @@
                         </div>
                         <div class="verticalSection" style="margin-top:1.5em">
                             <h3 class="checkboxListLabel">Force refresh</h3>
-                            <button is="emby-button" type="button" id="RefreshAllBtn" class="raised block">
-                                <span>Refresh all artists</span>
+                            <button is="emby-button" type="button" id="RefreshAllBtn" class="raised block button-delete">
+                                <span>Force Refresh All Artists</span>
                             </button>
-                            <div class="fieldDescription" id="RefreshAllStatus" style="margin-top:0.5em">
-                                Overwrites existing artist data. Watch Dashboard --> Scheduled Tasks --> ArtistFin: Know Your Artists.
+                            <div class="fieldDescription" style="margin-top:0.5em">
+                                Overwrites existing artist data! Don't use unless you know what you're doing!
                             </div>
+                            <div class="fieldDescription" id="RefreshAllStatus" style="margin-top:0.5em"></div>
                         </div>
                     </details>
 
@@ -294,7 +295,7 @@
                     contentType: 'application/json',
                     dataType: 'json'
                 }).then(function () {
-                    status.textContent = 'Queued. Watch Dashboard --> Scheduled Tasks --> ArtistFin: Know Your Artists.';
+                    status.textContent = 'Queued.';
                     Dashboard.hideLoadingMsg();
                 }).catch(function (err) {
                     var detail = (err && (err.message || err.statusText)) || 'unknown error';
