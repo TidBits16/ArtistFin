@@ -16,16 +16,68 @@
 
                     <div class="verticalSection">
                         <h3 class="checkboxListLabel">Data providers</h3>
-                        <div class="fieldDescription">Checked providers run in list order and merge with first-wins per field. Last.fm is best for short bios; Deezer for current portraits; MusicBrainz for IDs / hometown / genres. Wikipedia is a fallback bio.</div>
+                        <div class="fieldDescription">Providers are checked in order. First source wins per field.</div>
                         <div id="ProviderList" class="checkboxList paperList checkboxList-paperList"></div>
-                        <div class="inputContainer" id="LastFmApiKeyRow" style="margin-top:1em">
+                        <div class="inputContainer" id="LastFmApiKeyRow" style="display:none;margin-top:1em">
                             <label class="inputLabel inputLabelUnfocused" for="LastFmApiKey">Last.fm API key</label>
                             <input is="emby-input" type="text" id="LastFmApiKey" />
                             <div class="fieldDescription">
-                                Free, takes about a minute:
+                                Free and only takes about a minute:
                                 <a is="emby-linkbutton" class="button-link" href="https://www.last.fm/api/account/create" target="_blank">last.fm/api/account/create</a>
-                                (log in, name it ArtistFin, submit). You only need the API key, not the shared secret.
+                                (log in, name it ArtistFin, submit).
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="verticalSection">
+                        <h3 class="checkboxListLabel">Writes</h3>
+                        <div class="checkboxContainer">
+                            <label>
+                                <input is="emby-checkbox" type="checkbox" id="WriteBios" />
+                                <span>Bios</span>
+                            </label>
+                        </div>
+                        <div class="checkboxContainer">
+                            <label>
+                                <input is="emby-checkbox" type="checkbox" id="WritePrimaryImages" />
+                                <span>Primary images</span>
+                            </label>
+                        </div>
+                        <div class="checkboxContainer">
+                            <label>
+                                <input is="emby-checkbox" type="checkbox" id="WriteBackdrops" />
+                                <span>Backdrops</span>
+                            </label>
+                        </div>
+                        <div class="checkboxContainer">
+                            <label>
+                                <input is="emby-checkbox" type="checkbox" id="WriteLogos" />
+                                <span>Logos</span>
+                            </label>
+                        </div>
+                        <div class="checkboxContainer">
+                            <label>
+                                <input is="emby-checkbox" type="checkbox" id="WriteHometown" />
+                                <span>Hometown</span>
+                            </label>
+                        </div>
+                        <div class="checkboxContainer">
+                            <label>
+                                <input is="emby-checkbox" type="checkbox" id="WriteDates" />
+                                <span>Dates</span>
+                            </label>
+                        </div>
+                        <div class="checkboxContainer">
+                            <label>
+                                <input is="emby-checkbox" type="checkbox" id="WriteGenres" />
+                                <span>Genres</span>
+                            </label>
+                        </div>
+                        <div class="checkboxContainer">
+                            <label>
+                                <input is="emby-checkbox" type="checkbox" id="WriteWebsite" />
+                                <span>Website</span>
+                            </label>
                         </div>
                     </div>
 
@@ -57,11 +109,11 @@
             const AfConfig = { pluginUniqueId: '0cad762c-9696-4573-8fa8-ad33f3e5d167' };
 
             const PROVIDER_CATALOG = [
-                { id: 'MusicBrainz', name: 'MusicBrainz (IDs, hometown, genres, dates)' },
-                { id: 'LastFm', name: 'Last.fm (short bio)' },
-                { id: 'Deezer', name: 'Deezer (current primary image)' },
-                { id: 'TheAudioDB', name: 'TheAudioDB (backdrop / logo)' },
-                { id: 'Wikipedia', name: 'Wikipedia (bio fallback)' }
+                { id: 'MusicBrainz', name: 'MusicBrainz' },
+                { id: 'LastFm', name: 'Last.fm' },
+                { id: 'Deezer', name: 'Deezer' },
+                { id: 'TheAudioDB', name: 'TheAudioDB' },
+                { id: 'Wikipedia', name: 'Wikipedia' }
             ];
             const DEFAULT_PROVIDER_ORDER = PROVIDER_CATALOG.map(function (p) { return p.id; });
 
@@ -143,6 +195,7 @@
                 });
                 list.innerHTML = html;
                 Array.from(list.querySelectorAll('.sortableOption')).forEach(adjustSortableListElement);
+                syncProviderUi();
             }
 
             function readProviderOrder() {
@@ -179,6 +232,12 @@
                 Array.from(list.querySelectorAll('.sortableOption')).forEach(adjustSortableListElement);
             }
 
+            function syncProviderUi() {
+                var enabled = readEnabledProviders();
+                document.querySelector('#LastFmApiKeyRow').style.display =
+                    enabled.indexOf('LastFm') >= 0 ? '' : 'none';
+            }
+
             function applyConfig(config) {
                 var order = normalizeProviderOrder(
                     config.DataProviderOrder && config.DataProviderOrder.length
@@ -191,8 +250,17 @@
                     : defaultEnabledProviders();
                 renderProviderList(order, enabled);
                 document.querySelector('#LastFmApiKey').value = config.LastFmApiKey || '';
+                document.querySelector('#WriteBios').checked = config.WriteBios !== false;
+                document.querySelector('#WritePrimaryImages').checked = config.WritePrimaryImages !== false;
+                document.querySelector('#WriteBackdrops').checked = config.WriteBackdrops !== false;
+                document.querySelector('#WriteLogos').checked = config.WriteLogos !== false;
+                document.querySelector('#WriteHometown').checked = config.WriteHometown !== false;
+                document.querySelector('#WriteDates').checked = config.WriteDates !== false;
+                document.querySelector('#WriteGenres').checked = config.WriteGenres !== false;
+                document.querySelector('#WriteWebsite').checked = config.WriteWebsite !== false;
                 document.querySelector('#Workers').value =
                     typeof config.Workers === 'number' ? config.Workers : 1;
+                syncProviderUi();
             }
 
             function saveConfig() {
@@ -201,6 +269,14 @@
                     config.DataProviderOrder = readProviderOrder();
                     config.DataProviders = enabled.length ? enabled : defaultEnabledProviders();
                     config.LastFmApiKey = document.querySelector('#LastFmApiKey').value;
+                    config.WriteBios = document.querySelector('#WriteBios').checked;
+                    config.WritePrimaryImages = document.querySelector('#WritePrimaryImages').checked;
+                    config.WriteBackdrops = document.querySelector('#WriteBackdrops').checked;
+                    config.WriteLogos = document.querySelector('#WriteLogos').checked;
+                    config.WriteHometown = document.querySelector('#WriteHometown').checked;
+                    config.WriteDates = document.querySelector('#WriteDates').checked;
+                    config.WriteGenres = document.querySelector('#WriteGenres').checked;
+                    config.WriteWebsite = document.querySelector('#WriteWebsite').checked;
                     config.Workers = parseInt(document.querySelector('#Workers').value, 10) || 0;
                     return ApiClient.updatePluginConfiguration(AfConfig.pluginUniqueId, config);
                 });
@@ -230,6 +306,7 @@
             }
 
             document.querySelector('#ProviderList').addEventListener('click', onProviderListClick);
+            document.querySelector('#ProviderList').addEventListener('change', syncProviderUi);
 
             document.querySelector('#RefreshAllBtn').addEventListener('click', function (e) {
                 e.preventDefault();

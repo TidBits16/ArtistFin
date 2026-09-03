@@ -10,6 +10,22 @@ public class PluginConfiguration : BasePluginConfiguration
     /// <summary>Last.fm API key for artist bios (create at https://www.last.fm/api/account/create).</summary>
     public string LastFmApiKey { get; set; } = string.Empty;
 
+    public bool WriteBios { get; set; } = true;
+
+    public bool WritePrimaryImages { get; set; } = true;
+
+    public bool WriteBackdrops { get; set; } = true;
+
+    public bool WriteLogos { get; set; } = true;
+
+    public bool WriteHometown { get; set; } = true;
+
+    public bool WriteDates { get; set; } = true;
+
+    public bool WriteGenres { get; set; } = true;
+
+    public bool WriteWebsite { get; set; } = true;
+
     /// <summary>All providers in UI order (checked and unchecked).</summary>
     public ArtistDataProvider[] DataProviderOrder { get; set; } = [];
 

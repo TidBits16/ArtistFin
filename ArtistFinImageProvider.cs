@@ -25,7 +25,23 @@ public sealed class ArtistFinImageProvider : IRemoteImageProvider, IHasOrder
     public bool Supports(BaseItem item) => item is MusicArtist;
 
     public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
-        => [ImageType.Primary, ImageType.Backdrop, ImageType.Logo];
+    {
+        var cfg = Plugin.Instance?.Configuration;
+        if (cfg is null || cfg.WritePrimaryImages)
+        {
+            yield return ImageType.Primary;
+        }
+
+        if (cfg is null || cfg.WriteBackdrops)
+        {
+            yield return ImageType.Backdrop;
+        }
+
+        if (cfg is null || cfg.WriteLogos)
+        {
+            yield return ImageType.Logo;
+        }
+    }
 
     public async Task<IEnumerable<RemoteImageInfo>> GetImages(BaseItem item, CancellationToken cancellationToken)
     {
@@ -34,7 +50,8 @@ public sealed class ArtistFinImageProvider : IRemoteImageProvider, IHasOrder
             return [];
         }
 
-        var providers = Plugin.Instance?.Configuration.EffectiveDataProviders;
+        var cfg = Plugin.Instance?.Configuration;
+        var providers = cfg?.EffectiveDataProviders;
         var profile = await _lookup.LookupAsync(artist.Name ?? string.Empty, providers, cancellationToken)
             .ConfigureAwait(false);
         if (profile is null)
@@ -43,9 +60,21 @@ public sealed class ArtistFinImageProvider : IRemoteImageProvider, IHasOrder
         }
 
         var list = new List<RemoteImageInfo>();
-        Add(list, profile.PrimaryImageUrl, ImageType.Primary);
-        Add(list, profile.BackdropImageUrl, ImageType.Backdrop);
-        Add(list, profile.LogoImageUrl, ImageType.Logo);
+        if (cfg is null || cfg.WritePrimaryImages)
+        {
+            Add(list, profile.PrimaryImageUrl, ImageType.Primary);
+        }
+
+        if (cfg is null || cfg.WriteBackdrops)
+        {
+            Add(list, profile.BackdropImageUrl, ImageType.Backdrop);
+        }
+
+        if (cfg is null || cfg.WriteLogos)
+        {
+            Add(list, profile.LogoImageUrl, ImageType.Logo);
+        }
+
         return list;
     }
 

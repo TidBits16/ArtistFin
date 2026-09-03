@@ -57,7 +57,7 @@ public class ArtistEngine
 
         var targets = force
             ? artists
-            : artists.Where(NeedsWork).ToList();
+            : artists.Where(a => NeedsWork(a, cfg)).ToList();
 
         _logger.LogInformation(
             "ArtistFin: {Targets}/{Total} artists ({Mode}), providers {Providers}, {Workers} workers",
@@ -119,11 +119,19 @@ public class ArtistEngine
         return new ArtistRunResult(updated, failed, skipped);
     }
 
-    private static bool NeedsWork(MusicArtist artist)
+    private static bool NeedsWork(MusicArtist artist, PluginConfiguration cfg)
     {
-        var missingOverview = string.IsNullOrWhiteSpace(artist.Overview);
-        var missingImage = !artist.HasImage(ImageType.Primary, 0);
-        return missingOverview || missingImage;
+        if (cfg.WriteBios && string.IsNullOrWhiteSpace(artist.Overview))
+        {
+            return true;
+        }
+
+        if (cfg.WritePrimaryImages && !artist.HasImage(ImageType.Primary, 0))
+        {
+            return true;
+        }
+
+        return false;
     }
 
     private async Task<bool> ProcessArtistAsync(
@@ -143,41 +151,44 @@ public class ArtistEngine
 
         var changed = false;
 
-        if (!string.IsNullOrWhiteSpace(profile.Overview)
+        if (cfg.WriteBios
+            && !string.IsNullOrWhiteSpace(profile.Overview)
             && (force || string.IsNullOrWhiteSpace(artist.Overview)))
         {
             artist.Overview = profile.Overview;
             changed = true;
         }
 
-        if (!string.IsNullOrWhiteSpace(profile.Hometown)
+        if (cfg.WriteHometown
+            && !string.IsNullOrWhiteSpace(profile.Hometown)
             && (force || artist.ProductionLocations is not { Length: > 0 }))
         {
             artist.ProductionLocations = [profile.Hometown!];
             changed = true;
         }
 
-        if (!string.IsNullOrWhiteSpace(profile.Homepage)
+        if (cfg.WriteWebsite
+            && !string.IsNullOrWhiteSpace(profile.Homepage)
             && (force || string.IsNullOrWhiteSpace(artist.HomePageUrl)))
         {
             artist.HomePageUrl = profile.Homepage;
             changed = true;
         }
 
-        if (profile.Formed is not null && (force || artist.PremiereDate is null))
+        if (cfg.WriteDates && profile.Formed is not null && (force || artist.PremiereDate is null))
         {
             artist.PremiereDate = profile.Formed;
             artist.ProductionYear = profile.Formed.Value.Year;
             changed = true;
         }
 
-        if (profile.Disbanded is not null && (force || artist.EndDate is null))
+        if (cfg.WriteDates && profile.Disbanded is not null && (force || artist.EndDate is null))
         {
             artist.EndDate = profile.Disbanded;
             changed = true;
         }
 
-        if (profile.Genres.Count > 0)
+        if (cfg.WriteGenres && profile.Genres.Count > 0)
         {
             var existing = artist.Genres ?? [];
             var merged = existing
@@ -216,24 +227,35 @@ public class ArtistEngine
         }
 
         var imagesSaved = 0;
-        imagesSaved += await TrySaveImageAsync(
-            artist,
-            profile.PrimaryImageUrl,
-            ImageType.Primary,
-            force,
-            cancellationToken).ConfigureAwait(false) ? 1 : 0;
-        imagesSaved += await TrySaveImageAsync(
-            artist,
-            profile.BackdropImageUrl,
-            ImageType.Backdrop,
-            force,
-            cancellationToken).ConfigureAwait(false) ? 1 : 0;
-        imagesSaved += await TrySaveImageAsync(
-            artist,
-            profile.LogoImageUrl,
-            ImageType.Logo,
-            force,
-            cancellationToken).ConfigureAwait(false) ? 1 : 0;
+        if (cfg.WritePrimaryImages)
+        {
+            imagesSaved += await TrySaveImageAsync(
+                artist,
+                profile.PrimaryImageUrl,
+                ImageType.Primary,
+                force,
+                cancellationToken).ConfigureAwait(false) ? 1 : 0;
+        }
+
+        if (cfg.WriteBackdrops)
+        {
+            imagesSaved += await TrySaveImageAsync(
+                artist,
+                profile.BackdropImageUrl,
+                ImageType.Backdrop,
+                force,
+                cancellationToken).ConfigureAwait(false) ? 1 : 0;
+        }
+
+        if (cfg.WriteLogos)
+        {
+            imagesSaved += await TrySaveImageAsync(
+                artist,
+                profile.LogoImageUrl,
+                ImageType.Logo,
+                force,
+                cancellationToken).ConfigureAwait(false) ? 1 : 0;
+        }
 
         if (changed || imagesSaved > 0)
         {

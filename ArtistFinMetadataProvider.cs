@@ -1,4 +1,5 @@
 using System.Net.Http;
+using Jellyfin.Plugin.ArtistFin.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Providers;
@@ -32,7 +33,8 @@ public sealed class ArtistFinMetadataProvider : IRemoteMetadataProvider<MusicArt
             return result;
         }
 
-        var providers = Plugin.Instance?.Configuration.EffectiveDataProviders;
+        var cfg = Plugin.Instance?.Configuration ?? new PluginConfiguration();
+        var providers = cfg.EffectiveDataProviders;
         var profile = await _lookup.LookupAsync(name, providers, cancellationToken).ConfigureAwait(false);
         if (profile is null)
         {
@@ -40,33 +42,33 @@ public sealed class ArtistFinMetadataProvider : IRemoteMetadataProvider<MusicArt
         }
 
         var item = new MusicArtist { Name = profile.Name };
-        if (!string.IsNullOrWhiteSpace(profile.Overview))
+        if (cfg.WriteBios && !string.IsNullOrWhiteSpace(profile.Overview))
         {
             item.Overview = profile.Overview;
         }
 
-        if (!string.IsNullOrWhiteSpace(profile.Hometown))
+        if (cfg.WriteHometown && !string.IsNullOrWhiteSpace(profile.Hometown))
         {
             item.ProductionLocations = [profile.Hometown];
         }
 
-        if (!string.IsNullOrWhiteSpace(profile.Homepage))
+        if (cfg.WriteWebsite && !string.IsNullOrWhiteSpace(profile.Homepage))
         {
             item.HomePageUrl = profile.Homepage;
         }
 
-        if (profile.Formed is not null)
+        if (cfg.WriteDates && profile.Formed is not null)
         {
             item.PremiereDate = profile.Formed;
             item.ProductionYear = profile.Formed.Value.Year;
         }
 
-        if (profile.Disbanded is not null)
+        if (cfg.WriteDates && profile.Disbanded is not null)
         {
             item.EndDate = profile.Disbanded;
         }
 
-        if (profile.Genres.Count > 0)
+        if (cfg.WriteGenres && profile.Genres.Count > 0)
         {
             item.Genres = profile.Genres.ToArray();
         }
