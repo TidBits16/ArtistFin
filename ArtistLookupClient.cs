@@ -1,5 +1,7 @@
 using System.Globalization;
+using System.Net;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using Jellyfin.Plugin.ArtistFin.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -60,6 +62,17 @@ public sealed class ArtistLookupClient
                     }
 
                     break;
+                case ArtistDataProvider.LastFm:
+                {
+                    var hadOverview = !string.IsNullOrWhiteSpace(profile.Overview);
+                    await EnrichFromLastFmAsync(profile, cancellationToken).ConfigureAwait(false);
+                    if (!hadOverview && !string.IsNullOrWhiteSpace(profile.Overview))
+                    {
+                        used.Add("lastfm");
+                    }
+
+                    break;
+                }
                 case ArtistDataProvider.TheAudioDB:
                     await EnrichFromAudioDbAsync(profile, cancellationToken).ConfigureAwait(false);
                     if (!string.IsNullOrWhiteSpace(profile.AudioDbId))
@@ -146,7 +159,6 @@ public sealed class ArtistLookupClient
         profile.Homepage ??= NullIfEmpty(NormalizeUrl(JsonUtil.Str(artist.Value, "strWebsite")));
         profile.Hometown ??= NullIfEmpty(JsonUtil.Str(artist.Value, "strCountry"));
         profile.Overview ??= NullIfEmpty(PickBio(artist.Value));
-        profile.PrimaryImageUrl ??= NullIfEmpty(JsonUtil.Str(artist.Value, "strArtistThumb"));
         profile.BackdropImageUrl ??= NullIfEmpty(JsonUtil.Str(artist.Value, "strArtistFanart"))
             ?? NullIfEmpty(JsonUtil.Str(artist.Value, "strArtistFanart2"));
         profile.LogoImageUrl ??= NullIfEmpty(JsonUtil.Str(artist.Value, "strArtistLogo"));
@@ -218,9 +230,13 @@ public sealed class ArtistLookupClient
             profile.DeezerId ??= id;
         }
 
-        profile.PrimaryImageUrl ??= NullIfEmpty(JsonUtil.Str(best.Value, "picture_xl"))
+        var picture = NullIfEmpty(JsonUtil.Str(best.Value, "picture_xl"))
             ?? NullIfEmpty(JsonUtil.Str(best.Value, "picture_big"))
             ?? NullIfEmpty(JsonUtil.Str(best.Value, "picture"));
+        if (picture is not null)
+        {
+            profile.PrimaryImageUrl = picture;
+        }
     }
 
     private async Task EnrichFromMusicBrainzAsync(ArtistProfile profile, CancellationToken cancellationToken)
@@ -335,9 +351,74 @@ public sealed class ArtistLookupClient
             }
 
             profile.Overview = extract.Value.Extract;
-            profile.PrimaryImageUrl ??= extract.Value.Thumbnail;
             return;
         }
+    }
+
+    private async Task EnrichFromLastFmAsync(ArtistProfile profile, CancellationToken cancellationToken)
+    {
+        var apiKey = (Plugin.Instance?.Configuration.LastFmApiKey ?? string.Empty).Trim();
+        if (apiKey.Length == 0 || !string.IsNullOrWhiteSpace(profile.Overview))
+        {
+            return;
+        }
+
+        var query = new Dictionary<string, string>
+        {
+            ["method"] = "artist.getinfo",
+            ["api_key"] = apiKey,
+            ["format"] = "json",
+            ["autocorrect"] = "1"
+        };
+        if (!string.IsNullOrWhiteSpace(profile.MusicBrainzId))
+        {
+            query["mbid"] = profile.MusicBrainzId!;
+        }
+        else
+        {
+            query["artist"] = profile.Name;
+        }
+
+        JsonElement? payload;
+        try
+        {
+            payload = await _http.GetJsonAsync(
+                "lastfm/artist/" + (profile.MusicBrainzId ?? profile.Name),
+                "https://ws.audioscrobbler.com/2.0/",
+                query,
+                Ttl,
+                cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex, "Last.fm lookup failed for {Artist}", profile.Name);
+            return;
+        }
+
+        if (payload is null || payload.Value.ValueKind != JsonValueKind.Object
+            || payload.Value.TryGetProperty("error", out _))
+        {
+            return;
+        }
+
+        if (!payload.Value.TryGetProperty("artist", out var artist) || artist.ValueKind != JsonValueKind.Object)
+        {
+            return;
+        }
+
+        var remoteName = JsonUtil.Str(artist, "name");
+        if (remoteName.Length > 0 && !ArtistNames.NamesMatch(profile.Name, remoteName))
+        {
+            return;
+        }
+
+        if (!artist.TryGetProperty("bio", out var bio) || bio.ValueKind != JsonValueKind.Object)
+        {
+            return;
+        }
+
+        profile.Overview = CleanLastFmBio(JsonUtil.Str(bio, "summary"))
+            ?? CleanLastFmBio(JsonUtil.Str(bio, "content"));
     }
 
     private async Task<(string Extract, string? Thumbnail)?> FetchWikiSummaryAsync(
@@ -388,6 +469,21 @@ public sealed class ArtistLookupClient
             _logger.LogDebug(ex, "Wikipedia summary failed for {Title}", title);
             return null;
         }
+    }
+
+    private static string? CleanLastFmBio(string raw)
+    {
+        var s = (raw ?? string.Empty).Trim();
+        if (s.Length == 0)
+        {
+            return null;
+        }
+
+        s = WebUtility.HtmlDecode(s);
+        s = Regex.Replace(s, "<[^>]+>", " ");
+        s = Regex.Replace(s, @"\s+", " ").Trim();
+        s = Regex.Replace(s, @"Read more on Last\.fm\.?\s*$", string.Empty, RegexOptions.IgnoreCase).Trim();
+        return s.Length >= 40 ? s : null;
     }
 
     private static string? PickMusicBrainzId(JsonElement? search, string localName)

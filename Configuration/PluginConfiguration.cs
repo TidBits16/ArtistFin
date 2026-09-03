@@ -7,6 +7,9 @@ public class PluginConfiguration : BasePluginConfiguration
     /// <summary>Concurrent artist workers. 0 = 1. Cap low to stay polite to Wikipedia/MusicBrainz.</summary>
     public int Workers { get; set; } = 1;
 
+    /// <summary>Last.fm API key for artist bios (create at https://www.last.fm/api/account/create).</summary>
+    public string LastFmApiKey { get; set; } = string.Empty;
+
     /// <summary>All providers in UI order (checked and unchecked).</summary>
     public ArtistDataProvider[] DataProviderOrder { get; set; } = [];
 

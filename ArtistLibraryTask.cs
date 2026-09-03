@@ -19,7 +19,7 @@ public class ArtistLibraryTask : IScheduledTask
     public string Key => "ArtistFinLibrary";
 
     public string Description =>
-        "Fills missing artist bios, images, and profile details (Wikipedia, Deezer, TheAudioDB, MusicBrainz).";
+        "Fills missing artist bios, images, and profile details. A full refresh from plugin settings uses this same task and overwrites existing data.";
 
     public string Category => "Library";
 
@@ -27,7 +27,7 @@ public class ArtistLibraryTask : IScheduledTask
     {
         try
         {
-            await _engine.RunAsync(force: false, progress, cancellationToken).ConfigureAwait(false);
+            await _engine.RunAsync(progress, cancellationToken).ConfigureAwait(false);
         }
         catch (OperationCanceledException)
         {

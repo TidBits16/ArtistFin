@@ -4,19 +4,21 @@ namespace Jellyfin.Plugin.ArtistFin.Configuration;
 public enum ArtistDataProvider
 {
     MusicBrainz,
-    TheAudioDB,
+    LastFm,
     Deezer,
+    TheAudioDB,
     Wikipedia,
 }
 
 public static class ArtistDataProviderCatalog
 {
-    /// <summary>Default merge order: IDs/details first, then images, then bio fallback.</summary>
+    /// <summary>Default merge order: IDs, Last.fm bio, Deezer portrait, then AudioDB extras, Wikipedia fallback.</summary>
     public static readonly ArtistDataProvider[] AllInOrder =
     [
         ArtistDataProvider.MusicBrainz,
-        ArtistDataProvider.TheAudioDB,
+        ArtistDataProvider.LastFm,
         ArtistDataProvider.Deezer,
+        ArtistDataProvider.TheAudioDB,
         ArtistDataProvider.Wikipedia,
     ];
 }

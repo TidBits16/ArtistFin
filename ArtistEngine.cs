@@ -15,6 +15,7 @@ public class ArtistEngine
     private readonly IProviderManager _providers;
     private readonly ArtistLookupClient _lookup;
     private readonly ILogger<ArtistEngine> _logger;
+    private int _forceNext;
 
     public ArtistEngine(
         ILibraryManager library,
@@ -26,6 +27,15 @@ public class ArtistEngine
         _providers = providers;
         _lookup = lookup;
         _logger = logger;
+    }
+
+    /// <summary>Next scheduled run overwrites existing artist data (settings button).</summary>
+    public void RequestForce() => Interlocked.Exchange(ref _forceNext, 1);
+
+    public Task<ArtistRunResult> RunAsync(IProgress<double> progress, CancellationToken cancellationToken)
+    {
+        var force = Interlocked.Exchange(ref _forceNext, 0) == 1;
+        return RunAsync(force, progress, cancellationToken);
     }
 
     /// <param name="force">When true, overwrite existing overview/images/details.</param>

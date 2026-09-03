@@ -6,8 +6,8 @@
   "owner": "TidBits16",
   "category": "Metadata",
   "imageUrl": "https://raw.githubusercontent.com/TidBits16/ArtistFin/main/backdrop.svg",
-  "version": "1.0.3.0",
+  "version": "1.1.0.0",
   "targetAbi": "10.11.0.0",
-  "changelog": "Drop per-field fill toggles; providers control what gets written.",
+  "changelog": "Last.fm short bios (API key), Deezer portraits, and one scheduled task (force refresh from settings).",
   "imagePath": "backdrop.svg"
 }

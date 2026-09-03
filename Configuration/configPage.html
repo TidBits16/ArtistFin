@@ -12,21 +12,20 @@
                     <div class="sectionTitleContainer flex align-items-center">
                         <h2 class="sectionTitle">ArtistFin: Know Your Artists</h2>
                     </div>
-                    <p>Fills artist <strong>bios</strong>, <strong>images</strong>, and profile details. The scheduled task only fills what is missing. Use the button below to queue a full refresh.</p>
+                    <p>Fills artist <strong>bios</strong>, <strong>images</strong>, and profile details. The scheduled task only fills what is missing.</p>
 
                     <div class="verticalSection">
                         <h3 class="checkboxListLabel">Data providers</h3>
-                        <div class="fieldDescription">Checked providers run in list order and merge with first-wins per field. Whatever they return (bio, images, genres, hometown, dates, website) is written automatically. MusicBrainz is best for IDs / hometown / genres; TheAudioDB for images; Wikipedia for bios; Deezer for high-res primary art.</div>
+                        <div class="fieldDescription">Checked providers run in list order and merge with first-wins per field. Last.fm is best for short bios; Deezer for current portraits; MusicBrainz for IDs / hometown / genres. Wikipedia is a fallback bio.</div>
                         <div id="ProviderList" class="checkboxList paperList checkboxList-paperList"></div>
-                    </div>
-
-                    <div class="verticalSection">
-                        <h3 class="checkboxListLabel">Refresh</h3>
-                        <button is="emby-button" type="button" id="RefreshAllBtn" class="raised block">
-                            <span>Refresh all artists</span>
-                        </button>
-                        <div class="fieldDescription" id="RefreshAllStatus" style="margin-top:0.5em">
-                            Queues <strong>ArtistFin: Refresh All Artists</strong> under Dashboard --> Scheduled Tasks.
+                        <div class="inputContainer" id="LastFmApiKeyRow" style="margin-top:1em">
+                            <label class="inputLabel inputLabelUnfocused" for="LastFmApiKey">Last.fm API key</label>
+                            <input is="emby-input" type="text" id="LastFmApiKey" />
+                            <div class="fieldDescription">
+                                Free, takes about a minute:
+                                <a is="emby-linkbutton" class="button-link" href="https://www.last.fm/api/account/create" target="_blank">last.fm/api/account/create</a>
+                                (log in, name it ArtistFin, submit). You only need the API key, not the shared secret.
+                            </div>
                         </div>
                     </div>
 
@@ -36,6 +35,15 @@
                             <label class="inputLabel" for="Workers">Workers</label>
                             <input is="emby-input" type="number" id="Workers" min="0" max="4" />
                             <div class="fieldDescription">Concurrent artists. Keep low (MusicBrainz / Wikipedia prefer polite clients). 0 or 1 recommended. Max 4.</div>
+                        </div>
+                        <div class="verticalSection" style="margin-top:1.5em">
+                            <h3 class="checkboxListLabel">Force refresh</h3>
+                            <button is="emby-button" type="button" id="RefreshAllBtn" class="raised block">
+                                <span>Refresh all artists</span>
+                            </button>
+                            <div class="fieldDescription" id="RefreshAllStatus" style="margin-top:0.5em">
+                                Overwrites existing artist data. Watch Dashboard --> Scheduled Tasks --> ArtistFin: Know Your Artists.
+                            </div>
                         </div>
                     </details>
 
@@ -50,9 +58,10 @@
 
             const PROVIDER_CATALOG = [
                 { id: 'MusicBrainz', name: 'MusicBrainz (IDs, hometown, genres, dates)' },
-                { id: 'TheAudioDB', name: 'TheAudioDB (images, bio when available)' },
-                { id: 'Deezer', name: 'Deezer (high-res primary image)' },
-                { id: 'Wikipedia', name: 'Wikipedia (biography)' }
+                { id: 'LastFm', name: 'Last.fm (short bio)' },
+                { id: 'Deezer', name: 'Deezer (current primary image)' },
+                { id: 'TheAudioDB', name: 'TheAudioDB (backdrop / logo)' },
+                { id: 'Wikipedia', name: 'Wikipedia (bio fallback)' }
             ];
             const DEFAULT_PROVIDER_ORDER = PROVIDER_CATALOG.map(function (p) { return p.id; });
 
@@ -181,6 +190,7 @@
                     ? config.DataProviders
                     : defaultEnabledProviders();
                 renderProviderList(order, enabled);
+                document.querySelector('#LastFmApiKey').value = config.LastFmApiKey || '';
                 document.querySelector('#Workers').value =
                     typeof config.Workers === 'number' ? config.Workers : 1;
             }
@@ -190,6 +200,7 @@
                     var enabled = readEnabledProviders();
                     config.DataProviderOrder = readProviderOrder();
                     config.DataProviders = enabled.length ? enabled : defaultEnabledProviders();
+                    config.LastFmApiKey = document.querySelector('#LastFmApiKey').value;
                     config.Workers = parseInt(document.querySelector('#Workers').value, 10) || 0;
                     return ApiClient.updatePluginConfiguration(AfConfig.pluginUniqueId, config);
                 });
@@ -207,7 +218,7 @@
                     contentType: 'application/json',
                     dataType: 'json'
                 }).then(function () {
-                    status.textContent = 'Queued. Watch Dashboard --> Scheduled Tasks --> ArtistFin: Refresh All Artists.';
+                    status.textContent = 'Queued. Watch Dashboard --> Scheduled Tasks --> ArtistFin: Know Your Artists.';
                     Dashboard.hideLoadingMsg();
                 }).catch(function (err) {
                     var detail = (err && (err.message || err.statusText)) || 'unknown error';
