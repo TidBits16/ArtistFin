@@ -34,8 +34,8 @@
     <circle cx="35" cy="32.2" r="1.8" fill="#ffffff"/>
     <path fill="#ffffff" d="M 35 34.8 C 32.8 34.8 31.5 36.1 31.5 37.5 C 31.5 37.8 31.7 38 32 38 H 38 C 38.3 38 38.5 37.8 38.5 37.5 C 38.5 36.1 37.2 34.8 35 34.8 Z"/>
       </g>
-      <text class="tagline" x="0" y="408.00" dominant-baseline="hanging">A part of the FinFamily of plugins</text>
-      <text class="title" x="0" y="469.00" dominant-baseline="hanging">ArtistFin</text>
+      <text class="title" x="0" y="408.00" dominant-baseline="hanging">ArtistFin</text>
+      <text class="tagline" x="0" y="627.00" dominant-baseline="hanging">A part of the FinFamily of plugins</text>
     </g>
   </g>
 </svg>
