@@ -9,6 +9,14 @@
     "imageUrl": "https://raw.githubusercontent.com/TidBits16/ArtistFin/main/backdrop.svg",
     "versions": [
       {
+        "version": "1.2.3.0",
+        "changelog": "Keep - prefix on scheduled task only (plugin catalog name unchanged).",
+        "targetAbi": "10.11.0.0",
+        "sourceUrl": "https://github.com/TidBits16/ArtistFin/releases/download/v1.2.3.0/artistfin_1.2.3.0.zip",
+        "checksum": "e73e1f9d8782efe43c32228246c3a12a",
+        "timestamp": "2026-09-14T15:42:24Z"
+      },
+      {
         "version": "1.2.2.0",
         "changelog": "Sort plugin/task name to the bottom with a - prefix.",
         "targetAbi": "10.11.0.0",
