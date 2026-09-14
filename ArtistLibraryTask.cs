@@ -14,7 +14,7 @@ public class ArtistLibraryTask : IScheduledTask
         _logger = logger;
     }
 
-    public string Name => "ArtistFin: Know Your Artists";
+    public string Name => "- ArtistFin: Know Your Artists";
 
     public string Key => "ArtistFinLibrary";
 
