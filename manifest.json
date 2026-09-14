@@ -9,6 +9,14 @@
     "imageUrl": "https://raw.githubusercontent.com/TidBits16/ArtistFin/main/backdrop.svg",
     "versions": [
       {
+        "version": "1.2.8.0",
+        "changelog": "Solid primary backdrop; horizontal logo+title lockup; italic FinFamily tagline.",
+        "targetAbi": "10.11.0.0",
+        "sourceUrl": "https://github.com/TidBits16/ArtistFin/releases/download/v1.2.8.0/artistfin_1.2.8.0.zip",
+        "checksum": "c332da9b9d8f1f8be7d760f0f57661cd",
+        "timestamp": "2026-09-14T16:30:43Z"
+      },
+      {
         "version": "1.2.7.0",
         "changelog": "Horizontal logo+title lockup; full-opacity FinFamily tagline under title.",
         "targetAbi": "10.11.0.0",
