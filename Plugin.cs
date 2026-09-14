@@ -19,7 +19,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
 
     public static Plugin? Instance { get; private set; }
 
-    public override string Name => "- ArtistFin: Know Your Artists";
+    public override string Name => "ArtistFin: Know Your Artists";
 
     public override string Description =>
         "Fills artist bios, images, and profile details.";

@@ -1,13 +1,13 @@
 {
   "guid": "0cad762c-9696-4573-8fa8-ad33f3e5d167",
-  "name": "- ArtistFin: Know Your Artists",
+  "name": "ArtistFin: Know Your Artists",
   "description": "Fills artist bios, images, and profile details.",
   "overview": "Fills artist bios, images, and profile details.",
   "owner": "TidBits16",
   "category": "Metadata",
   "imageUrl": "https://raw.githubusercontent.com/TidBits16/ArtistFin/main/backdrop.svg",
-  "version": "1.2.2.0",
+  "version": "1.2.3.0",
   "targetAbi": "10.11.0.0",
-  "changelog": "Sort plugin/task name to the bottom with a - prefix.",
+  "changelog": "Keep - prefix on scheduled task only (plugin catalog name unchanged).",
   "imagePath": "backdrop.svg"
 }

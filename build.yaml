@@ -1,6 +1,6 @@
-name: "- ArtistFin: Know Your Artists"
+name: "ArtistFin: Know Your Artists"
 guid: "0cad762c-9696-4573-8fa8-ad33f3e5d167"
-version: "1.2.2.0"
+version: "1.2.3.0"
 targetAbi: "10.11.0.0"
 framework: "net9.0"
 overview: "Fills artist bios, images, and profile details."
@@ -11,4 +11,4 @@ artifacts:
   - "Jellyfin.Plugin.ArtistFin.dll"
   - "backdrop.svg"
 changelog: >
-  Sort plugin/task name to the bottom with a - prefix.
+  Keep - prefix on scheduled task only (plugin catalog name unchanged).
