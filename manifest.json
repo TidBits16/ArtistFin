@@ -9,6 +9,14 @@
     "imageUrl": "https://raw.githubusercontent.com/TidBits16/ArtistFin/main/backdrop.svg",
     "versions": [
       {
+        "version": "1.2.2.0",
+        "changelog": "Sort plugin/task name to the bottom with a - prefix.",
+        "targetAbi": "10.11.0.0",
+        "sourceUrl": "https://github.com/TidBits16/ArtistFin/releases/download/v1.2.2.0/artistfin_1.2.2.0.zip",
+        "checksum": "05aada410089199f70b5de96b64d627f",
+        "timestamp": "2026-09-14T15:24:48Z"
+      },
+      {
         "version": "1.2.1.0",
         "changelog": "Clearer force-button label, red destructive action, and shorter help text.",
         "targetAbi": "10.11.0.0",
