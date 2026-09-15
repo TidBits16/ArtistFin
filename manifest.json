@@ -9,6 +9,14 @@
     "imageUrl": "https://raw.githubusercontent.com/TidBits16/ArtistFin/main/backdrop.svg",
     "versions": [
       {
+        "version": "1.2.10.0",
+        "changelog": "Shared FinCommon HTTP cache/client.",
+        "targetAbi": "10.11.0.0",
+        "sourceUrl": "https://github.com/TidBits16/ArtistFin/releases/download/v1.2.10.0/artistfin_1.2.10.0.zip",
+        "checksum": "399bf70c442146758264948d213b85b4",
+        "timestamp": "2026-09-15T14:30:18Z"
+      },
+      {
         "version": "1.2.9.0",
         "changelog": "Stop writing artist genres (MusicFin now rolls track genres up to artists instead).",
         "targetAbi": "10.11.0.0",
