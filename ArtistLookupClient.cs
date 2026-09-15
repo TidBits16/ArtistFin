@@ -163,12 +163,6 @@ public sealed class ArtistLookupClient
             ?? NullIfEmpty(JsonUtil.Str(artist.Value, "strArtistFanart2"));
         profile.LogoImageUrl ??= NullIfEmpty(JsonUtil.Str(artist.Value, "strArtistLogo"));
 
-        var genre = JsonUtil.Str(artist.Value, "strGenre");
-        if (genre.Length > 0 && !profile.Genres.Contains(genre, StringComparer.OrdinalIgnoreCase))
-        {
-            profile.Genres.Add(genre);
-        }
-
         profile.Formed ??= ParseYear(JsonUtil.Str(artist.Value, "intFormedYear"))
             ?? ParseYear(JsonUtil.Str(artist.Value, "intBornYear"));
         profile.Disbanded ??= ParseYear(JsonUtil.Str(artist.Value, "intDiedYear"));
@@ -272,7 +266,7 @@ public sealed class ArtistLookupClient
                 new Dictionary<string, string>
                 {
                     ["fmt"] = "json",
-                    ["inc"] = "url-rels+genres+aliases"
+                    ["inc"] = "url-rels+aliases"
                 },
                 Ttl,
                 cancellationToken).ConfigureAwait(false);
@@ -291,18 +285,6 @@ public sealed class ArtistLookupClient
             {
                 profile.Formed ??= ParseDate(JsonUtil.Str(life, "begin"));
                 profile.Disbanded ??= ParseDate(JsonUtil.Str(life, "end"));
-            }
-
-            if (detail.Value.TryGetProperty("genres", out var genres) && genres.ValueKind == JsonValueKind.Array)
-            {
-                foreach (var g in genres.EnumerateArray())
-                {
-                    var name = JsonUtil.Str(g, "name");
-                    if (name.Length > 0 && !profile.Genres.Contains(name, StringComparer.OrdinalIgnoreCase))
-                    {
-                        profile.Genres.Add(CultureInfo.InvariantCulture.TextInfo.ToTitleCase(name));
-                    }
-                }
             }
 
             if (detail.Value.TryGetProperty("relations", out var rels) && rels.ValueKind == JsonValueKind.Array)

@@ -20,8 +20,6 @@ public sealed class ArtistProfile
 
     public DateTime? Disbanded { get; set; }
 
-    public List<string> Genres { get; } = [];
-
     public string? PrimaryImageUrl { get; set; }
 
     public string? BackdropImageUrl { get; set; }
@@ -36,8 +34,7 @@ public sealed class ArtistProfile
            || !string.IsNullOrWhiteSpace(BackdropImageUrl)
            || !string.IsNullOrWhiteSpace(Homepage)
            || !string.IsNullOrWhiteSpace(Hometown)
-           || Formed is not null
-           || Genres.Count > 0;
+           || Formed is not null;
 }
 
 public static class ArtistNames

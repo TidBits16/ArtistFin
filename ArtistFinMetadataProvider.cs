@@ -68,11 +68,6 @@ public sealed class ArtistFinMetadataProvider : IRemoteMetadataProvider<MusicArt
             item.EndDate = profile.Disbanded;
         }
 
-        if (cfg.WriteGenres && profile.Genres.Count > 0)
-        {
-            item.Genres = profile.Genres.ToArray();
-        }
-
         if (!string.IsNullOrWhiteSpace(profile.MusicBrainzId))
         {
             item.SetProviderId(MetadataProvider.MusicBrainzArtist, profile.MusicBrainzId);

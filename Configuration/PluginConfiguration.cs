@@ -22,8 +22,6 @@ public class PluginConfiguration : BasePluginConfiguration
 
     public bool WriteDates { get; set; } = true;
 
-    public bool WriteGenres { get; set; } = true;
-
     public bool WriteWebsite { get; set; } = true;
 
     /// <summary>All providers in UI order (checked and unchecked).</summary>

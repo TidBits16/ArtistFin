@@ -14,8 +14,8 @@ A Jellyfin plugin that fills <strong>artist bios</strong>, <strong>images</stron
 ## Providers
 
 <table align="center">
-  <tr><td align="left"><strong>MusicBrainz</strong></td><td align="left">IDs, hometown, formed/disbanded, genres, official site</td></tr>
-  <tr><td align="left"><strong>TheAudioDB</strong></td><td align="left">images, genre, country, formed year (bios when available from the free API)</td></tr>
+  <tr><td align="left"><strong>MusicBrainz</strong></td><td align="left">IDs, hometown, formed/disbanded, official site</td></tr>
+  <tr><td align="left"><strong>TheAudioDB</strong></td><td align="left">images, country, formed year (bios when available from the free API)</td></tr>
   <tr><td align="left"><strong>Deezer</strong></td><td align="left">high-res primary artist images</td></tr>
   <tr><td align="left"><strong>Wikipedia</strong></td><td align="left">biography extract (the reliable free bio source)</td></tr>
 </table>

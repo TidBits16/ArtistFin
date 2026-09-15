@@ -188,21 +188,6 @@ public class ArtistEngine
             changed = true;
         }
 
-        if (cfg.WriteGenres && profile.Genres.Count > 0)
-        {
-            var existing = artist.Genres ?? [];
-            var merged = existing
-                .Concat(profile.Genres)
-                .Where(g => !string.IsNullOrWhiteSpace(g))
-                .Distinct(StringComparer.OrdinalIgnoreCase)
-                .ToArray();
-            if (force || merged.Length > existing.Length)
-            {
-                artist.Genres = merged;
-                changed = true;
-            }
-        }
-
         if (!string.IsNullOrWhiteSpace(profile.MusicBrainzId)
             && string.IsNullOrWhiteSpace(artist.GetProviderId(MetadataProvider.MusicBrainzArtist)))
         {

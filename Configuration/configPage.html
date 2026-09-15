@@ -69,12 +69,6 @@
                         </div>
                         <div class="checkboxContainer">
                             <label>
-                                <input is="emby-checkbox" type="checkbox" id="WriteGenres" />
-                                <span>Genres</span>
-                            </label>
-                        </div>
-                        <div class="checkboxContainer">
-                            <label>
                                 <input is="emby-checkbox" type="checkbox" id="WriteWebsite" />
                                 <span>Website</span>
                             </label>
@@ -257,7 +251,6 @@
                 document.querySelector('#WriteLogos').checked = config.WriteLogos !== false;
                 document.querySelector('#WriteHometown').checked = config.WriteHometown !== false;
                 document.querySelector('#WriteDates').checked = config.WriteDates !== false;
-                document.querySelector('#WriteGenres').checked = config.WriteGenres !== false;
                 document.querySelector('#WriteWebsite').checked = config.WriteWebsite !== false;
                 document.querySelector('#Workers').value =
                     typeof config.Workers === 'number' ? config.Workers : 1;
@@ -276,7 +269,6 @@
                     config.WriteLogos = document.querySelector('#WriteLogos').checked;
                     config.WriteHometown = document.querySelector('#WriteHometown').checked;
                     config.WriteDates = document.querySelector('#WriteDates').checked;
-                    config.WriteGenres = document.querySelector('#WriteGenres').checked;
                     config.WriteWebsite = document.querySelector('#WriteWebsite').checked;
                     config.Workers = parseInt(document.querySelector('#Workers').value, 10) || 0;
                     return ApiClient.updatePluginConfiguration(AfConfig.pluginUniqueId, config);
