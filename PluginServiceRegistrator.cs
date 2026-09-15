@@ -1,3 +1,4 @@
+using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Plugins;
@@ -10,7 +11,8 @@ public class PluginServiceRegistrator : IPluginServiceRegistrator
 {
     public void RegisterServices(IServiceCollection serviceCollection, IServerApplicationHost applicationHost)
     {
-        serviceCollection.AddSingleton<HttpCache>();
+        serviceCollection.AddSingleton(sp =>
+            new HttpCache(sp.GetRequiredService<IApplicationPaths>(), "artistfin"));
         serviceCollection.AddSingleton<ArtistLookupClient>();
         serviceCollection.AddSingleton<ArtistEngine>();
         serviceCollection.AddSingleton<IRemoteMetadataProvider<MusicArtist, ArtistInfo>, ArtistFinMetadataProvider>();

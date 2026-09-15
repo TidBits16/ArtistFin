@@ -23,7 +23,9 @@ public sealed class ArtistLookupClient
             factory,
             cache,
             TimeSpan.FromMilliseconds(400),
-            "ArtistFin/1.0.0 (https://github.com/TidBits16/ArtistFin)");
+            userAgent: "ArtistFin/1.0.0 (https://github.com/TidBits16/ArtistFin)",
+            maxInFlight: 1,
+            retryOn429: true);
         _logger = logger;
     }
 
