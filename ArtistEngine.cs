@@ -66,7 +66,9 @@ public class ArtistEngine
 
         var targets = force
             ? artists
-            : artists.Where(a => NeedsWork(a, cfg)).ToList();
+            : artists
+                .Where(a => NeedsWork(a, cfg) && !LookupMiss.IsRemembered(_cache, ArtistMissKey(a)))
+                .ToList();
 
         _logger.LogInformation(
             "ArtistFin: {Targets}/{Total} artists ({Mode}), providers {Providers}, {Workers} workers",
@@ -155,6 +157,10 @@ public class ArtistEngine
                 cancellationToken).ConfigureAwait(false);
         if (profile is null)
         {
+            LookupMiss.Remember(_cache, ArtistMissKey(artist));
+            _logger.LogInformation(
+                "ArtistFin: {Artist}: marked unknown (will retry after cache TTL)",
+                artist.Name);
             return false;
         }
 
@@ -292,6 +298,9 @@ public class ArtistEngine
             return false;
         }
     }
+
+    private static string ArtistMissKey(MusicArtist artist)
+        => "artist/" + ArtistNames.Norm(artist.Name ?? string.Empty);
 }
 
 public readonly record struct ArtistRunResult(int Updated, int Missed, int Skipped);
