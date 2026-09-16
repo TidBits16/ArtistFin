@@ -9,7 +9,7 @@ namespace Jellyfin.Plugin.ArtistFin;
 
 public sealed class ArtistLookupClient
 {
-    private static readonly TimeSpan Ttl = TimeSpan.FromDays(14);
+    private static readonly TimeSpan Ttl = TimeSpan.FromDays(30);
 
     private readonly PacedHttp _http;
     private readonly ILogger<ArtistLookupClient> _logger;

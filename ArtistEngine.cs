@@ -14,6 +14,7 @@ public class ArtistEngine
     private readonly ILibraryManager _library;
     private readonly IProviderManager _providers;
     private readonly ArtistLookupClient _lookup;
+    private readonly HttpCache _cache;
     private readonly ILogger<ArtistEngine> _logger;
     private int _forceNext;
 
@@ -21,11 +22,13 @@ public class ArtistEngine
         ILibraryManager library,
         IProviderManager providers,
         ArtistLookupClient lookup,
+        HttpCache cache,
         ILogger<ArtistEngine> logger)
     {
         _library = library;
         _providers = providers;
         _lookup = lookup;
+        _cache = cache;
         _logger = logger;
     }
 
@@ -38,12 +41,18 @@ public class ArtistEngine
         return RunAsync(force, progress, cancellationToken);
     }
 
-    /// <param name="force">When true, overwrite existing overview/images/details.</param>
+    /// <param name="force">When true, clear HTTP cache and overwrite existing overview/images/details.</param>
     public async Task<ArtistRunResult> RunAsync(
         bool force,
         IProgress<double> progress,
         CancellationToken cancellationToken)
     {
+        if (force)
+        {
+            _cache.Clear();
+            _logger.LogInformation("ArtistFin: force refresh requested (HTTP cache cleared)");
+        }
+
         var cfg = Plugin.Instance?.Configuration ?? new PluginConfiguration();
         var workers = Math.Clamp(cfg.Workers <= 0 ? 1 : cfg.Workers, 1, 4);
 

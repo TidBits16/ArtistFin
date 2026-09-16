@@ -9,6 +9,14 @@
     "imageUrl": "https://raw.githubusercontent.com/TidBits16/ArtistFin/main/backdrop.svg",
     "versions": [
       {
+        "version": "1.2.11.0",
+        "changelog": "HTTP caches last 30 days; force refresh clears cache; expired lookups re-fetch individually.",
+        "targetAbi": "10.11.0.0",
+        "sourceUrl": "https://github.com/TidBits16/ArtistFin/releases/download/v1.2.11.0/artistfin_1.2.11.0.zip",
+        "checksum": "18fd80df205e96327d73619f818e0bce",
+        "timestamp": "2026-09-16T15:07:34Z"
+      },
+      {
         "version": "1.2.10.0",
         "changelog": "Shared FinCommon HTTP cache/client.",
         "targetAbi": "10.11.0.0",
