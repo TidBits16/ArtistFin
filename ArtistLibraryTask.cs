@@ -48,7 +48,7 @@ public class ArtistLibraryTask : IScheduledTask
             {
                 Type = TaskTriggerInfoType.WeeklyTrigger,
                 DayOfWeek = DayOfWeek.Sunday,
-                TimeOfDayTicks = TimeSpan.FromHours(2).Ticks
+                TimeOfDayTicks = TimeSpan.FromHours(5).Ticks
             }
         ];
     }
