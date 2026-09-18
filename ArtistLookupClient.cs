@@ -2,10 +2,10 @@ using System.Globalization;
 using System.Net;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using Jellyfin.Plugin.ArtistFin.Configuration;
+using Jellyfin.Plugin.ArtistTagShelf.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Jellyfin.Plugin.ArtistFin;
+namespace Jellyfin.Plugin.ArtistTagShelf;
 
 public sealed class ArtistLookupClient
 {
@@ -23,7 +23,7 @@ public sealed class ArtistLookupClient
             factory,
             cache,
             TimeSpan.FromMilliseconds(400),
-            userAgent: "ArtistFin/1.0.0 (https://github.com/TidBits16/ArtistFin)",
+            userAgent: "ArtistTagShelf/1.0.0 (https://github.com/TidBits16/ArtistTagShelf)",
             maxInFlight: 1,
             retryOn429: true);
         _logger = logger;

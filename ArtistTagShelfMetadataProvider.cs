@@ -1,26 +1,26 @@
 using System.Net.Http;
-using Jellyfin.Plugin.ArtistFin.Configuration;
+using Jellyfin.Plugin.ArtistTagShelf.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 
-namespace Jellyfin.Plugin.ArtistFin;
+namespace Jellyfin.Plugin.ArtistTagShelf;
 
-/// <summary>Native Jellyfin metadata provider so Identify/Refresh Artist also uses ArtistFin.</summary>
-public sealed class ArtistFinMetadataProvider : IRemoteMetadataProvider<MusicArtist, ArtistInfo>, IHasOrder
+/// <summary>Native Jellyfin metadata provider so Identify/Refresh Artist also uses ArtistTagShelf.</summary>
+public sealed class ArtistTagShelfMetadataProvider : IRemoteMetadataProvider<MusicArtist, ArtistInfo>, IHasOrder
 {
     private readonly ArtistLookupClient _lookup;
     private readonly IHttpClientFactory _http;
 
-    public ArtistFinMetadataProvider(ArtistLookupClient lookup, IHttpClientFactory http)
+    public ArtistTagShelfMetadataProvider(ArtistLookupClient lookup, IHttpClientFactory http)
     {
         _lookup = lookup;
         _http = http;
     }
 
-    public string Name => "ArtistFin";
+    public string Name => "ArtistTagShelf";
 
     public int Order => 2;
 

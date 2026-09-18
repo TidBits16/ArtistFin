@@ -5,17 +5,17 @@ using MediaBrowser.Controller.Plugins;
 using MediaBrowser.Controller.Providers;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Jellyfin.Plugin.ArtistFin;
+namespace Jellyfin.Plugin.ArtistTagShelf;
 
 public class PluginServiceRegistrator : IPluginServiceRegistrator
 {
     public void RegisterServices(IServiceCollection serviceCollection, IServerApplicationHost applicationHost)
     {
         serviceCollection.AddSingleton(sp =>
-            new HttpCache(sp.GetRequiredService<IApplicationPaths>(), "artistfin"));
+            new HttpCache(sp.GetRequiredService<IApplicationPaths>(), "artisttagshelf", "artistfin"));
         serviceCollection.AddSingleton<ArtistLookupClient>();
         serviceCollection.AddSingleton<ArtistEngine>();
-        serviceCollection.AddSingleton<IRemoteMetadataProvider<MusicArtist, ArtistInfo>, ArtistFinMetadataProvider>();
-        serviceCollection.AddSingleton<IRemoteImageProvider, ArtistFinImageProvider>();
+        serviceCollection.AddSingleton<IRemoteMetadataProvider<MusicArtist, ArtistInfo>, ArtistTagShelfMetadataProvider>();
+        serviceCollection.AddSingleton<IRemoteImageProvider, ArtistTagShelfImageProvider>();
     }
 }

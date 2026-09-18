@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>ArtistFin: Know Your Artists</title>
+    <title>ArtistTagShelf: Know Your Artists</title>
     <style>
         .finConfig .finIntro { margin: 0.25em 0 1.5em; opacity: 0.75; }
         .finConfig .verticalSection { margin-top: 1.75em; }
@@ -51,7 +51,7 @@
             <div class="content-primary">
                 <form id="AfConfigForm">
                     <div class="sectionTitleContainer flex align-items-center">
-                        <h2 class="sectionTitle">ArtistFin: Know Your Artists</h2>
+                        <h2 class="sectionTitle">ArtistTagShelf: Know Your Artists</h2>
                     </div>
                     <p class="fieldDescription finIntro">Fills artist <strong>bios</strong>, <strong>images</strong>, and profile details. The scheduled task only fills what is missing.</p>
 
@@ -336,7 +336,7 @@
                 Dashboard.showLoadingMsg();
                 return ApiClient.ajax({
                     type: 'POST',
-                    url: ApiClient.getUrl('ArtistFin/RefreshAll'),
+                    url: ApiClient.getUrl('ArtistTagShelf/RefreshAll'),
                     contentType: 'application/json',
                     dataType: 'json'
                 }).then(function () {

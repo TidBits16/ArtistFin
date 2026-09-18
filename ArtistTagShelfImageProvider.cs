@@ -5,20 +5,20 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 
-namespace Jellyfin.Plugin.ArtistFin;
+namespace Jellyfin.Plugin.ArtistTagShelf;
 
-public sealed class ArtistFinImageProvider : IRemoteImageProvider, IHasOrder
+public sealed class ArtistTagShelfImageProvider : IRemoteImageProvider, IHasOrder
 {
     private readonly ArtistLookupClient _lookup;
     private readonly IHttpClientFactory _http;
 
-    public ArtistFinImageProvider(ArtistLookupClient lookup, IHttpClientFactory http)
+    public ArtistTagShelfImageProvider(ArtistLookupClient lookup, IHttpClientFactory http)
     {
         _lookup = lookup;
         _http = http;
     }
 
-    public string Name => "ArtistFin";
+    public string Name => "ArtistTagShelf";
 
     public int Order => 2;
 

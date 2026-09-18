@@ -1,6 +1,6 @@
 using MediaBrowser.Model.Plugins;
 
-namespace Jellyfin.Plugin.ArtistFin.Configuration;
+namespace Jellyfin.Plugin.ArtistTagShelf.Configuration;
 
 public class PluginConfiguration : BasePluginConfiguration
 {

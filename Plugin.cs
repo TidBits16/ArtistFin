@@ -1,11 +1,11 @@
 using System.Globalization;
-using Jellyfin.Plugin.ArtistFin.Configuration;
+using Jellyfin.Plugin.ArtistTagShelf.Configuration;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Model.Plugins;
 using MediaBrowser.Model.Serialization;
 
-namespace Jellyfin.Plugin.ArtistFin;
+namespace Jellyfin.Plugin.ArtistTagShelf;
 
 public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
 {
@@ -19,7 +19,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
 
     public static Plugin? Instance { get; private set; }
 
-    public override string Name => "ArtistFin: Know Your Artists";
+    public override string Name => "ArtistTagShelf: Know Your Artists";
 
     public override string Description =>
         "Fills artist bios, images, and profile details.";

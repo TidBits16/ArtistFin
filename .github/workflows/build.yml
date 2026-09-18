@@ -11,4 +11,4 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "9.0.x"
-      - run: dotnet build Jellyfin.Plugin.ArtistFin.csproj -c Release --nologo
+      - run: dotnet build Jellyfin.Plugin.ArtistTagShelf.csproj -c Release --nologo

@@ -1,7 +1,7 @@
 using MediaBrowser.Model.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace Jellyfin.Plugin.ArtistFin;
+namespace Jellyfin.Plugin.ArtistTagShelf;
 
 public class ArtistLibraryTask : IScheduledTask
 {
@@ -14,9 +14,9 @@ public class ArtistLibraryTask : IScheduledTask
         _logger = logger;
     }
 
-    public string Name => "- ArtistFin: Know Your Artists";
+    public string Name => "- ArtistTagShelf: Know Your Artists";
 
-    public string Key => "ArtistFinLibrary";
+    public string Key => "ArtistTagShelfLibrary";
 
     public string Description =>
         "Fills missing artist bios, images, and profile details. A full refresh from plugin settings uses this same task and overwrites existing data.";
@@ -35,7 +35,7 @@ public class ArtistLibraryTask : IScheduledTask
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "ArtistFin failed");
+            _logger.LogError(ex, "ArtistTagShelf failed");
             throw;
         }
     }

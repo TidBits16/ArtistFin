@@ -1,6 +1,6 @@
-namespace Jellyfin.Plugin.ArtistFin.Configuration;
+namespace Jellyfin.Plugin.ArtistTagShelf.Configuration;
 
-/// <summary>Remote sources ArtistFin can merge into an artist profile.</summary>
+/// <summary>Remote sources ArtistTagShelf can merge into an artist profile.</summary>
 public enum ArtistDataProvider
 {
     MusicBrainz,

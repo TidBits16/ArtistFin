@@ -1,5 +1,5 @@
 using Jellyfin.Data.Enums;
-using Jellyfin.Plugin.ArtistFin.Configuration;
+using Jellyfin.Plugin.ArtistTagShelf.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Library;
@@ -7,7 +7,7 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using Microsoft.Extensions.Logging;
 
-namespace Jellyfin.Plugin.ArtistFin;
+namespace Jellyfin.Plugin.ArtistTagShelf;
 
 public class ArtistEngine
 {
@@ -50,7 +50,7 @@ public class ArtistEngine
         if (force)
         {
             _cache.Clear();
-            _logger.LogInformation("ArtistFin: force refresh requested (HTTP cache cleared)");
+            _logger.LogInformation("ArtistTagShelf: force refresh requested (HTTP cache cleared)");
         }
 
         var cfg = Plugin.Instance?.Configuration ?? new PluginConfiguration();
@@ -71,7 +71,7 @@ public class ArtistEngine
                 .ToList();
 
         _logger.LogInformation(
-            "ArtistFin: {Targets}/{Total} artists ({Mode}), providers {Providers}, {Workers} workers",
+            "ArtistTagShelf: {Targets}/{Total} artists ({Mode}), providers {Providers}, {Workers} workers",
             targets.Count,
             artists.Count,
             force ? "force all" : "missing only",
@@ -108,7 +108,7 @@ public class ArtistEngine
             catch (Exception ex)
             {
                 Interlocked.Increment(ref failed);
-                _logger.LogWarning(ex, "ArtistFin failed on {Id} ({Name})", artist.Id, artist.Name);
+                _logger.LogWarning(ex, "ArtistTagShelf failed on {Id} ({Name})", artist.Id, artist.Name);
             }
             finally
             {
@@ -120,7 +120,7 @@ public class ArtistEngine
 
         progress.Report(100);
         _logger.LogInformation(
-            "ArtistFin finished: updated {Updated}, no match {Missed}, skipped {Skipped}, http {Http}/{Cache} cache",
+            "ArtistTagShelf finished: updated {Updated}, no match {Missed}, skipped {Skipped}, http {Http}/{Cache} cache",
             updated,
             failed,
             skipped,
@@ -159,7 +159,7 @@ public class ArtistEngine
         {
             LookupMiss.Remember(_cache, ArtistMissKey(artist));
             _logger.LogInformation(
-                "ArtistFin: {Artist}: marked unknown (will retry after cache TTL)",
+                "ArtistTagShelf: {Artist}: marked unknown (will retry after cache TTL)",
                 artist.Name);
             return false;
         }
@@ -260,7 +260,7 @@ public class ArtistEngine
         if (changed || imagesSaved > 0)
         {
             _logger.LogInformation(
-                "ArtistFin updated {Id}: {Name} ({Source})",
+                "ArtistTagShelf updated {Id}: {Name} ({Source})",
                 artist.Id,
                 artist.Name,
                 profile.Source);
@@ -294,7 +294,7 @@ public class ArtistEngine
         }
         catch (Exception ex)
         {
-            _logger.LogDebug(ex, "ArtistFin could not save {Type} image for {Name}", type, artist.Name);
+            _logger.LogDebug(ex, "ArtistTagShelf could not save {Type} image for {Name}", type, artist.Name);
             return false;
         }
     }

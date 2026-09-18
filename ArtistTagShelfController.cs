@@ -5,18 +5,18 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Jellyfin.Plugin.ArtistFin;
+namespace Jellyfin.Plugin.ArtistTagShelf;
 
 [Authorize(Policy = Policies.RequiresElevation)]
 [ApiController]
 [Produces(MediaTypeNames.Application.Json)]
-[Route("ArtistFin")]
-public sealed class ArtistFinController : ControllerBase
+[Route("ArtistTagShelf")]
+public sealed class ArtistTagShelfController : ControllerBase
 {
     private readonly ArtistEngine _engine;
     private readonly ITaskManager _tasks;
 
-    public ArtistFinController(ArtistEngine engine, ITaskManager tasks)
+    public ArtistTagShelfController(ArtistEngine engine, ITaskManager tasks)
     {
         _engine = engine;
         _tasks = tasks;

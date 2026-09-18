@@ -1,4 +1,4 @@
-namespace Jellyfin.Plugin.ArtistFin;
+namespace Jellyfin.Plugin.ArtistTagShelf;
 
 public sealed class ArtistProfile
 {

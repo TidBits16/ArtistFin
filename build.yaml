@@ -1,4 +1,4 @@
-name: "ArtistFin: Know Your Artists"
+name: "ArtistTagShelf: Know Your Artists"
 guid: "0cad762c-9696-4573-8fa8-ad33f3e5d167"
 version: "1.2.14.0"
 targetAbi: "10.11.0.0"
@@ -8,7 +8,7 @@ description: "Fills artist bios, images, and profile details."
 category: "Metadata"
 owner: "TidBits16"
 artifacts:
-  - "Jellyfin.Plugin.ArtistFin.dll"
+  - "Jellyfin.Plugin.ArtistTagShelf.dll"
   - "backdrop.svg"
 changelog: >
   Simultaneous-run safety: preserve explicit marks on album renames, album re-mark when tracks seen, shared Deezer/MusicBrainz pace, staggered Sunday defaults.
