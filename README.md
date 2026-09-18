@@ -5,6 +5,8 @@
 
 # ArtistTagShelf: Know Your Artists
 
+> <strong>LLM disclosure:</strong> This plugin is <strong>primarily developed with LLM assistance</strong> (Cursor / coding agents). Review and test before relying on it in production.
+
 > Formerly <strong>ArtistFin</strong>. Same plugin GUID — settings carry over when you update.
 
 A Jellyfin plugin that fills <strong>artist bios</strong>, <strong>images</strong>, and <strong>profile details</strong> (<em>the TagShelf counterpart to MusicTagShelf’s album/track tagging</em>).
